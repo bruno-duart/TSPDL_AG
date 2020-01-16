@@ -12,6 +12,7 @@ typedef struct {
 int* ini_array(int dimension);
 void print_arr(int dimension, int *arr);
 Solution* new_solution(int vsize);
+void free_solution(Solution *S);
 Solution* greed_method(Graph *G, int *demand, int *draft);
 bool is_Solution(Graph *G, int *demand, int *draft, int *solution);
 Solution* random_swap(Graph *G, int *demand, int *draft, int* solution, int distance, int param);
@@ -61,6 +62,11 @@ Solution* new_solution(int vsize){
     sol->solution = malloc(sizeof(int) * vsize);
     sol->distance = 0;
     return sol;
+}
+
+void free_solution(Solution *S){
+    free(S->solution);
+    free(S);
 }
 
 int* ini_array(int dimension){
@@ -407,8 +413,12 @@ void torneio2(Graph *G, Solution **p, int nFighter, Solution **pais){
     //atribuição dos selecionados ao vetor de pais
     idx = 0;
     for(i = 0; i < nCandidato && idx < 2; i++){
-        if(!visitado[candidatos[i]])
-            pais[idx++] = p[candidatos[i]];
+        if(!visitado[candidatos[i]]){
+            for(int j = 0; j < G->V; j++)
+                pais[idx]->solution[j] = p[candidatos[i]]->solution[j];
+            pais[idx]->distance = p[candidatos[i]]->distance;
+            idx++;
+        }
     }
     
     free(visitado);
@@ -491,18 +501,31 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
     int sizep = 2 * G->V, sizer = G->V;
     int i;
     Solution **population = malloc(sizeof(Solution*) * sizep);
+    Solution **pais = malloc(sizeof(Solution*)* 2);
+    
+    pais[0] = new_solution(sizer);
+    pais[1] = new_solution(sizer);
 
     //print_arr(sizer, draft);
    
     for(i = 0; i < sizep; i++)
         population[i] = construcao(G, demand, draft);
-
+        
     print_population(population, sizep, sizer);
 
+    //Seleção dos pais
+    printf("Pais selecionados\n");
+    torneio2(G, population, 6, pais);
+
+    print_population(pais, 2, sizer);
+
+    //Liberação de memória alocada
     for(i = 0; i < sizep; i++){
-        free(population[i]->solution);
-        free(population[i]);
+        free_solution(population[i]);
     }
+    free_solution(pais[0]);
+    free_solution(pais[1]);
+    free(pais);
     free(population);
 }
 
