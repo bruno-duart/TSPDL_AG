@@ -499,12 +499,14 @@ Solution* construcao(Graph *G, int *demand, int *draft){
 
 Solution AlgGenetico(Graph *G, int *demand, int *draft){
     int sizep = 2 * G->V, sizer = G->V;
-    int i;
+    int i, **bebes = malloc(sizeof(int*) * 2);
     Solution **population = malloc(sizeof(Solution*) * sizep);
     Solution **pais = malloc(sizeof(Solution*)* 2);
     
     pais[0] = new_solution(sizer);
     pais[1] = new_solution(sizer);
+    bebes[0] = malloc(sizeof(int) * sizer);
+    bebes[1] = malloc(sizeof(int) * sizer);
 
     //print_arr(sizer, draft);
    
@@ -519,15 +521,29 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
 
     print_population(pais, 2, sizer);
 
+    //Cruzamento
+    order1Crossover(G, pais, bebes);
+    printf("Filho 1: Distância: %d ",fitnness(G,bebes[0]));
+    print_arr(sizer, bebes[0]);
+    printf("Filho 2: Distância: %d ",fitnness(G,bebes[1]));
+    print_arr(sizer, bebes[1]);
+
     //Liberação de memória alocada
-    for(i = 0; i < sizep; i++){
+    for(i = 0; i < sizep; i++)
         free_solution(population[i]);
-    }
+    
+    free(bebes[0]);
+    free(bebes[1]);
+    free(bebes);
     free_solution(pais[0]);
     free_solution(pais[1]);
     free(pais);
     free(population);
 }
+
+
+// Primeira tentativa de implementar algoritmos genéticos. 
+// Não houve sucesso. Parte das funções serão reaproveitadas.
 
 /* Solution genetico(Graph *G, int *demand, int *draft){
     Solution *population[2*G->V];
