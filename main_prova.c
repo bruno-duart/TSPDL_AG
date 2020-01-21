@@ -263,7 +263,7 @@ void order1Crossover(Graph *G,  Solution** Pai, int **filho){
     
     if(n0 > 0)
         for(k = G->V-1; k >= 0; k--){
-            if(filho[0][k]==-1){
+            if(filho[0][k] == -1){
                 for(int l = G->V-1; l >= 0; l--){
                     if(!isIn(G,Pai[1]->solution[l], filho[0])){
                         filho[0][k] = Pai[1]->solution[l];
@@ -497,11 +497,36 @@ Solution* construcao(Graph *G, int *demand, int *draft){
     return novaSolucao;    
 }
 
+void mutacao(Graph *G, int *demand, int *draft, Solution *P){
+    int ind1 = rand() % (G->V - 1), ind2, auxTroca;
+
+    do{
+        do{
+            ind2 = rand() % (G->V - 1);
+        }while(ind1 == ind2);
+
+        auxTroca = P->solution[ind1];
+        P->solution[ind1] = P->solution[ind2];
+        P->solution[ind2] = auxTroca;
+
+        if(is_Solution(G, demand, draft, P->solution))
+            break;
+        
+        //Caso a troca gere uma solução não viável, desfaz-se a troca.
+        auxTroca = P->solution[ind1];
+        P->solution[ind1] = P->solution[ind2];
+        P->solution[ind2] = auxTroca;
+    }while(1);
+
+    P->distance = fitnness(G, P->solution);
+}
+
 Solution AlgGenetico(Graph *G, int *demand, int *draft){
     int sizep = 2 * G->V, sizer = G->V;
     int i, **bebes = malloc(sizeof(int*) * 2);
     Solution **population = malloc(sizeof(Solution*) * sizep);
-    Solution **pais = malloc(sizeof(Solution*)* 2);
+    Solution **pais = malloc(sizeof(Solution*) * 2);
+    Solution **filhos = malloc(sizeof(Solution*) * sizep);
     
     pais[0] = new_solution(sizer);
     pais[1] = new_solution(sizer);
@@ -510,8 +535,10 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
 
     //print_arr(sizer, draft);
    
-    for(i = 0; i < sizep; i++)
+    for(i = 0; i < sizep; i++){
         population[i] = construcao(G, demand, draft);
+        filhos[i] = new_solution(sizer);
+    }
         
     print_population(population, sizep, sizer);
 
@@ -522,15 +549,28 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
     print_population(pais, 2, sizer);
 
     //Cruzamento
-    order1Crossover(G, pais, bebes);
-    printf("Filho 1: Distância: %d ",fitnness(G,bebes[0]));
-    print_arr(sizer, bebes[0]);
-    printf("Filho 2: Distância: %d ",fitnness(G,bebes[1]));
-    print_arr(sizer, bebes[1]);
+    do{
+        order1Crossover(G, pais, bebes);
+    }while(!is_Solution(G, demand, draft, bebes[0]) || !is_Solution(G, demand, draft, bebes[1]));
+
+    // printf("Filho 1: Distância: %d ",fitnness(G,bebes[0]));
+    // print_arr(sizer, bebes[0]);
+    // printf("Filho 2: Distância: %d ",fitnness(G,bebes[1]));
+    // print_arr(sizer, bebes[1]);
+
+    i = rand() % sizep;
+    // printf("Antes da mutação: \nDistância: %d: ", population[i]->distance);
+    // print_arr(sizer, population[i]->solution);    
+    mutacao(G, demand, draft, population[i]);
+    // printf("Depois da mutação: \nDistância: %d: ", population[i]->distance);
+    // print_arr(sizer, population[i]->solution);    
+    // mutacao(G, demand, draft, population[i]);
 
     //Liberação de memória alocada
-    for(i = 0; i < sizep; i++)
+    for(i = 0; i < sizep; i++){
         free_solution(population[i]);
+        free_solution(filhos[i]);
+    }
     
     free(bebes[0]);
     free(bebes[1]);
@@ -539,6 +579,7 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
     free_solution(pais[1]);
     free(pais);
     free(population);
+    free(filhos);
 }
 
 
