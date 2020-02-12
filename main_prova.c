@@ -17,7 +17,7 @@ Solution* greed_method(Graph *G, int *demand, int *draft);
 bool is_Solution(Graph *G, int *demand, int *draft, int *solution);
 Solution* random_swap(Graph *G, int *demand, int *draft, int* solution, int distance, int param);
 Solution* random_solution(Graph *G, int *demand, int *draft);
-int fitnness(Graph *G, int *S);
+int fitness(Graph *G, int *S);
 int isIn(Graph *G, int cidade, int *filho);
 int indexOf(Graph *G, Solution **Arr, int value);
 void order1Crossover(Graph *G, Solution** Pai, int **filho);
@@ -201,7 +201,7 @@ Solution* random_swap(Graph *G, int *demand, int *draft, int* solution, int dist
     free(copy);
     return s;
 }
-int fitnness(Graph *G, int *S){
+int fitness(Graph *G, int *S){
     int distance = G->adj[0][S[0]];
 
     for(int i = 1; i < G->V; i++){
@@ -498,9 +498,10 @@ Solution* construcao(Graph *G, int *demand, int *draft){
 }
 
 void mutacao(Graph *G, int *demand, int *draft, Solution *P){
-    int ind1 = rand() % (G->V - 1), ind2, auxTroca;
+    int ind1, ind2, auxTroca;
 
     do{
+        ind1 = rand() % (G->V - 1);
         do{
             ind2 = rand() % (G->V - 1);
         }while(ind1 == ind2);
@@ -518,12 +519,19 @@ void mutacao(Graph *G, int *demand, int *draft, Solution *P){
         P->solution[ind2] = auxTroca;
     }while(1);
 
-    P->distance = fitnness(G, P->solution);
+    P->distance = fitness(G, P->solution);
+}
+
+void copiar(Graph *G, Solution *S, int *solucao){
+    for(int i = 0; i < G->V; i++)
+        S->solution[i] = solucao[i];
+    S->distance = fitness(G, solucao);
 }
 
 Solution AlgGenetico(Graph *G, int *demand, int *draft){
     int sizep = 2 * G->V, sizer = G->V;
-    int i, **bebes = malloc(sizeof(int*) * 2);
+    int i, **bebes = malloc(sizeof(int*) * 2), numFilhos;
+    int *mutantes;
     Solution **population = malloc(sizeof(Solution*) * sizep);
     Solution **pais = malloc(sizeof(Solution*) * 2);
     Solution **filhos = malloc(sizeof(Solution*) * sizep);
@@ -540,31 +548,48 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
         filhos[i] = new_solution(sizer);
     }
         
-    print_population(population, sizep, sizer);
+    print_population(population, sizep, sizer);   
 
-    //Seleção dos pais
-    printf("Pais selecionados\n");
-    torneio2(G, population, 6, pais);
-
-    print_population(pais, 2, sizer);
-
+    numFilhos = 0;
+    
     //Cruzamento
-    do{
-        order1Crossover(G, pais, bebes);
-    }while(!is_Solution(G, demand, draft, bebes[0]) || !is_Solution(G, demand, draft, bebes[1]));
+    for(i = 0; i < sizer; i++){
+        if((rand() % 100) < 95){ // Probabilidade de ocorrer 'crossover'
 
-    // printf("Filho 1: Distância: %d ",fitnness(G,bebes[0]));
-    // print_arr(sizer, bebes[0]);
-    // printf("Filho 2: Distância: %d ",fitnness(G,bebes[1]));
-    // print_arr(sizer, bebes[1]);
+            //Seleção dos pais
+            //printf("Pais selecionados\n");
+            torneio2(G, population, 6, pais);
 
-    i = rand() % sizep;
-    // printf("Antes da mutação: \nDistância: %d: ", population[i]->distance);
-    // print_arr(sizer, population[i]->solution);    
-    mutacao(G, demand, draft, population[i]);
-    // printf("Depois da mutação: \nDistância: %d: ", population[i]->distance);
-    // print_arr(sizer, population[i]->solution);    
-    // mutacao(G, demand, draft, population[i]);
+            //print_population(pais, 2, sizer);
+            
+            do{
+                order1Crossover(G, pais, bebes);
+            }while(!is_Solution(G, demand, draft, bebes[0]) || !is_Solution(G, demand, draft, bebes[1]));
+
+            // printf("Filho 1: Distância: %d ",fitness(G,bebes[0]));
+            // print_arr(sizer, bebes[0]);
+            // printf("Filho 2: Distância: %d ",fitness(G,bebes[1]));
+            // print_arr(sizer, bebes[1]);
+
+            copiar(G, filhos[numFilhos++], bebes[0]);
+            copiar(G, filhos[numFilhos++], bebes[1]);
+        }
+    }
+    
+    //Mutação
+    for(i = 0; i < numFilhos; i++){
+        if((rand() % 100) < 5 ){
+            i = rand() % numFilhos;
+            // printf("Antes da mutação: \nDistância: %d: ", population[i]->distance);
+            // print_arr(sizer, population[i]->solution);    
+            mutacao(G, demand, draft, filhos[i]);
+            // printf("Depois da mutação: \nDistância: %d: ", population[i]->distance);
+            // print_arr(sizer, population[i]->solution);    
+            // mutacao(G, demand, draft, population[i]);
+        }
+    }
+    printf("Filhos\n");
+    print_population(filhos, numFilhos, sizer);
 
     //Liberação de memória alocada
     for(i = 0; i < sizep; i++){
@@ -650,8 +675,8 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
                     filhos[numBebes-1]->solution[i] = bebes[1][i];
                 }
                 
-                filhos[numBebes-2]->distance = fitnness(G,bebes[0]);
-                filhos[numBebes-1]->distance = fitnness(G,bebes[1]);
+                filhos[numBebes-2]->distance = fitness(G,bebes[0]);
+                filhos[numBebes-1]->distance = fitness(G,bebes[1]);
             }
             
         }
@@ -672,7 +697,7 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
                     population[index1]->solution[index2] = population[index1]->solution[index2-1];
                     population[index1]->solution[index2-1] = auxTroca;
 
-                    population[index1]->distance = fitnness(G, population[index1]->solution);
+                    population[index1]->distance = fitness(G, population[index1]->solution);
 
                     if(is_Solution(G, demand, draft, population[index1]->solution))
                         flag = false;
@@ -683,7 +708,7 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
                         population[index1]->solution[index2-1] = auxTroca;
 
                         flag = true;
-                        population[index1]->distance = fitnness(G, population[index1]->solution);
+                        population[index1]->distance = fitness(G, population[index1]->solution);
                     }
                 }while(flag);
             }
