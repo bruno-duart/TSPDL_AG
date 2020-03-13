@@ -531,10 +531,11 @@ void copiar(Graph *G, Solution *S, int *solucao){
 Solution AlgGenetico(Graph *G, int *demand, int *draft){
     int sizep = 2 * G->V, sizer = G->V;
     int i, **bebes = malloc(sizeof(int*) * 2), numFilhos;
-    int *mutantes;
+    int *mutantes, gerAtual = 0, ultMelhor = 0;
     Solution **population = malloc(sizeof(Solution*) * sizep);
     Solution **pais = malloc(sizeof(Solution*) * 2);
     Solution **filhos = malloc(sizeof(Solution*) * sizep);
+    Solution *Melhor = new_solution(sizer);
     
     pais[0] = new_solution(sizer);
     pais[1] = new_solution(sizer);
@@ -545,51 +546,73 @@ Solution AlgGenetico(Graph *G, int *demand, int *draft){
    
     for(i = 0; i < sizep; i++){
         population[i] = construcao(G, demand, draft);
+        if(i == 0 || population[i]->distance < Melhor->distance)
+            copiar(G, Melhor, population[i]->solution);
         filhos[i] = new_solution(sizer);
     }
         
-    print_population(population, sizep, sizer);   
-
+    //print_population(population, sizep, sizer);   
+    printf("Menor: %d\n", Melhor->distance);
     numFilhos = 0;
     
-    //Cruzamento
-    for(i = 0; i < sizer; i++){
-        if((rand() % 100) < 95){ // Probabilidade de ocorrer 'crossover'
+    while((gerAtual - ultMelhor) < 1){
+        //Cruzamento
+        for(i = 0; i < sizer; i++){
+            if((rand() % 100) < 95){ // Probabilidade de ocorrer 'crossover'
 
-            //Seleção dos pais
-            //printf("Pais selecionados\n");
-            torneio2(G, population, 6, pais);
+                //Seleção dos pais
+                //printf("Pais selecionados\n");
+                torneio2(G, population, 6, pais);
 
-            //print_population(pais, 2, sizer);
+                //print_population(pais, 2, sizer);            
+                do{
+                    order1Crossover(G, pais, bebes);
+                }while(!is_Solution(G, demand, draft, bebes[0]) || !is_Solution(G, demand, draft, bebes[1]));
+
+                // printf("Filho 1: Distância: %d ",fitness(G,bebes[0]));
+                // print_arr(sizer, bebes[0]);
+                // printf("Filho 2: Distância: %d ",fitness(G,bebes[1]));
+                // print_arr(sizer, bebes[1]);
+
+                copiar(G, filhos[numFilhos++], bebes[0]);
+                copiar(G, filhos[numFilhos++], bebes[1]);
+            }
+        }
+        
+        //Mutação
+        for(i = 0; i < numFilhos; i++){
+            if((rand() % 100) < 5 ){
+                i = rand() % numFilhos;
+                // printf("Antes da mutação: \nDistância: %d: ", population[i]->distance);
+                // print_arr(sizer, population[i]->solution);    
+                mutacao(G, demand, draft, filhos[i]);
+                // printf("Depois da mutação: \nDistância: %d: ", population[i]->distance);
+                // print_arr(sizer, population[i]->solution);    
+                // mutacao(G, demand, draft, population[i]);
+            }
+        }
+        //printf("Antes Filhos\n");
+        //print_population(filhos, numFilhos, sizer);
+
+        while(numFilhos < sizep){
+            i = rand() % sizep;
+            copiar(G, filhos[numFilhos++], population[i]->solution);
+        }
+        
+        for(i = 0; i < sizep; i++){
+            copiar(G, population[i], filhos[i]->solution);
             
-            do{
-                order1Crossover(G, pais, bebes);
-            }while(!is_Solution(G, demand, draft, bebes[0]) || !is_Solution(G, demand, draft, bebes[1]));
-
-            // printf("Filho 1: Distância: %d ",fitness(G,bebes[0]));
-            // print_arr(sizer, bebes[0]);
-            // printf("Filho 2: Distância: %d ",fitness(G,bebes[1]));
-            // print_arr(sizer, bebes[1]);
-
-            copiar(G, filhos[numFilhos++], bebes[0]);
-            copiar(G, filhos[numFilhos++], bebes[1]);
+            if(population[i]->distance < Melhor->distance){
+                copiar(G, Melhor, population[i]->solution);
+                ultMelhor = gerAtual;
+            }
         }
+        
+        gerAtual++;
     }
-    
-    //Mutação
-    for(i = 0; i < numFilhos; i++){
-        if((rand() % 100) < 5 ){
-            i = rand() % numFilhos;
-            // printf("Antes da mutação: \nDistância: %d: ", population[i]->distance);
-            // print_arr(sizer, population[i]->solution);    
-            mutacao(G, demand, draft, filhos[i]);
-            // printf("Depois da mutação: \nDistância: %d: ", population[i]->distance);
-            // print_arr(sizer, population[i]->solution);    
-            // mutacao(G, demand, draft, population[i]);
-        }
-    }
-    printf("Filhos\n");
-    print_population(filhos, numFilhos, sizer);
+    printf("Menor: %d\n", Melhor->distance);
+    //printf("Depois Filhos\n");
+    //print_population(filhos, numFilhos, sizer);
 
     //Liberação de memória alocada
     for(i = 0; i < sizep; i++){
