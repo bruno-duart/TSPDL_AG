@@ -12,7 +12,7 @@ typedef struct {
 //variáveis globais
 Graph *G;
 size_t CONT_GER;
-int DIM, PSIZE, MAX_ITER, PERC_MUT;
+int DIM, PSIZE, MAX_ITER, PERC_MUT, OPT_VAL;
 int *DEMAND, *DRAFT;
 
 int* ini_array();
@@ -20,6 +20,7 @@ void print_arr(int *arr);
 Solution* new_solution();
 void free_solution(Solution *S);
 bool is_Solution(int *harbor);
+Solution* random_swap(Solution* individuo);
 int fitness(int *S);
 int isIn(int cidade, int *filho);
 int indexOf(Solution **Arr, int value);
@@ -36,16 +37,18 @@ int main(){
     G = New_Graph(DIM);
     DEMAND = ini_array(DIM);
     DRAFT = ini_array(DIM);
+    scanf("%d", &OPT_VAL);
     //parâmetros do algoritmo genético
     PSIZE = DIM * 2;
-    MAX_ITER = 100;
+    MAX_ITER = 1000;
     PERC_MUT = 5;
+
 
     tempo1 = clock();
     //sei la
 
     long int result, best, cbest, media[2];
-    int qt_iter = 1000;
+    int qt_iter = 100;
 
     for(int i=1; i <= 20; i++){
         PERC_MUT = i;
@@ -66,7 +69,8 @@ int main(){
         media[1] /= qt_iter;
         cbest *= (100.0 / qt_iter);
         printf("[ %2i %% ]  MediaRes = %5ld   MediaCont = %5ld   "\
-                "BestRes = %5ld ( %2i %%)\n", i, media[0], media[1], best, (int) cbest);
+                "BestRes = %5ld ( %2i %%)  DesvMed= %2.2f  DesvMenor= %2.2f\n", i, media[0], 
+                media[1], best, (int) cbest,(media[0]-OPT_VAL)*100.0/(OPT_VAL), (best-OPT_VAL)*100.0/(OPT_VAL));
     }
     //printf("\nCONT_GER = %ld\n\n", (long int) CONT_GER);
     
@@ -468,4 +472,39 @@ int AlgGenetico(){
     int res = Melhor->distance;
     free_solution(Melhor);
     return res;
+}
+
+Solution* random_swap(Solution* individuo){
+    int index_1, index_2, aux, distance_i;
+    int *copy = malloc(sizeof(int)*(G->V));
+    Solution *s = malloc(sizeof(Solution));
+    s->harbor = malloc(sizeof(int) * (G->V));
+    s->distance = individuo->distance;
+    
+    for(int i=0; i < 100; i++){
+        for(int k=0; k < G->V; k++)
+            copy[k] = individuo->harbor[k];
+        do{
+            index_1 = rand() % (G->V-1);
+            do{
+                index_2 = rand() % (G->V-1);
+            }while(index_1 == index_2);
+
+            aux = copy[index_2];
+            copy[index_2] = copy[index_1];
+            copy[index_1] = aux;
+        }while(!is_Solution(copy));
+        
+        distance_i = G->adj[0][copy[0]];
+        for(int j=1; j < G->V; j++)
+            distance_i += G->adj[ copy[j-1] ][ copy[j] ];
+
+        if(distance_i < s->distance){
+            s->distance = distance_i;
+            for(int k=0; k < G->V; k++)
+                s->harbor[k] = copy[k];
+        }
+    }
+    free(copy);
+    return s;
 }
