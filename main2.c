@@ -25,6 +25,8 @@ int fitness(int *S);
 int isIn(int cidade, int *filho);
 int indexOf(Solution **Arr, int value);
 void order1Crossover(Solution** Pai, int **filho);
+void merge(Solution **Arr, int start, int middle, int end);
+void mergeSort(Solution **Arr, int start, int end);
 
 Solution* construcao();
 int AlgGenetico();
@@ -40,7 +42,7 @@ int main(){
     scanf("%d", &OPT_VAL);
     //parâmetros do algoritmo genético
     PSIZE = DIM * 2;
-    MAX_ITER = 1000;
+    MAX_ITER = 100;
     PERC_MUT = 5;
 
 
@@ -48,7 +50,7 @@ int main(){
     //sei la
 
     long int result, best, cbest, media[2];
-    int qt_iter = 100;
+    int qt_iter = 1;
 
     for(int i=1; i <= 20; i++){
         PERC_MUT = i;
@@ -69,7 +71,7 @@ int main(){
         media[1] /= qt_iter;
         cbest *= (100.0 / qt_iter);
         printf("[ %2i %% ]  MediaRes = %5ld   MediaCont = %5ld   "\
-                "BestRes = %5ld ( %2i %%)  DesvMed= %2.2f  DesvMenor= %2.2f\n", i, media[0], 
+                "BestRes = %5ld ( %2i %%)  DesvMed = %2.2f  DesvMenor = %2.2f\n", i, media[0], 
                 media[1], best, (int) cbest,(media[0]-OPT_VAL)*100.0/(OPT_VAL), (best-OPT_VAL)*100.0/(OPT_VAL));
     }
     //printf("\nCONT_GER = %ld\n\n", (long int) CONT_GER);
@@ -356,6 +358,10 @@ Solution* construcao(){
 }
 
 void mutacao(Solution *P){
+    /*Responsável por realizar mutação nos cromossomos, permitindo maior
+    variabilidade no espaço de busca. Sorteiam-se dois índices e trocam-se os dois
+    de locus. Verifica-se a viabilidade da solução, e caso positivo, aceita-se a troca.
+    Caso contrário, retorna-se ao estado original e refaz-se o sorteio*/
     int ind1, ind2, auxTroca;
 
     do{
@@ -381,16 +387,60 @@ void mutacao(Solution *P){
 }
 
 void copiar(Solution *S, int *solucao){
+    /*Função utilizada para efetuar a cópia do conteúdo dos ponteiros de 
+    Solution*/
     for(int i = 0; i < G->V; i++)
         S->harbor[i] = solucao[i];
     S->distance = fitness(solucao);
 }
 
+void merge(Solution **Arr, int start, int middle, int end){
+    Solution **temp = malloc(sizeof(Solution) * (end - start + 1)); 
+    int i = start, j = middle + 1, k = 0;
+
+    while(i <= middle && j <= end){
+        if(Arr[i]->distance <= Arr[j]->distance){
+            temp[k] = Arr[i];
+            k++;
+            i++;
+        }
+        else{
+            temp[k] = Arr[j];
+            k++;
+            j++;
+        }
+    }
+    while(i <= middle){
+        temp[k] = Arr[i];
+        k++;
+        i++;
+    }
+    while(j <= end){
+        temp[k] = Arr[j];
+        k++;
+        j++;
+    }
+    for(int i = start; i <= end; i++)
+        Arr[i] = temp[i - start];
+    
+    //free(temp);
+}
+
+void mergeSort(Solution **Arr, int start, int end){
+    if (start < end){
+        int middle = start + (end - start)/2;
+        mergeSort(Arr, start, middle);
+        mergeSort(Arr, middle+1, end);
+        merge(Arr, start, middle, end);
+    }
+}
+
 int AlgGenetico(){
     int nFighter;
     int taxaMutacao;
-    int i, **bebes = malloc(sizeof(int*) * 2), numFilhos;
+    int i, j, **bebes = malloc(sizeof(int*) * 2), numFilhos;
     int *mutantes, gerAtual = 0, ultMelhor = 0;
+    int index[4];
     Solution **population = malloc(sizeof(Solution*) * PSIZE);
     Solution **pais = malloc(sizeof(Solution*) * 2);
     Solution **filhos = malloc(sizeof(Solution*) * PSIZE);
@@ -411,6 +461,10 @@ int AlgGenetico(){
     //início do ciclo
     CONT_GER = 0;
     while((gerAtual - ultMelhor) < MAX_ITER){
+        if((gerAtual - ultMelhor) == (MAX_ITER/2)){
+            for(i = 0; i < PSIZE; i++)
+                copiar(population[i], random_swap(population[i])->harbor);
+        }
         //Cruzamento
         numFilhos = 0;
         for(i = 0; i < DIM; i++)
@@ -440,10 +494,67 @@ int AlgGenetico(){
             i = rand() % PSIZE;
             copiar(filhos[numFilhos++], population[i]->harbor);
         }
-        
+
+        //0 e 1 para os melhores filhos
+        //2 e 3 para os piores pais
+        index[0] = index[2] = 0; 
+        index[1] = index[3] = 1;
+
+        if(filhos[ index[0] ]->distance > filhos[ index[1] ] ->distance){
+            i = index[0]; 
+            index[0] = index[1];
+            index[1] = i;
+        }
+
+        for(i = 2; i < PSIZE; i++){
+            if(filhos[i]->distance < filhos[ index[0] ]->distance){
+                index[1] = index[0];
+                index[0] = i;
+            } else if(filhos[i]->distance < filhos[ index[1] ]->distance){
+                index[1] = i;
+            }
+        }
+
+        if(population[ index[2] ]->distance < population[ index[3] ] ->distance){
+            i = index[2]; 
+            index[2] = index[3];
+            index[3] = i;
+        }
+        for(i = 2; i < PSIZE; i++){
+            if(population[i]->distance > population[ index[2] ]->distance){
+                index[3] = index[2];
+                index[2] = i;
+            } else if(population[i]->distance > population[ index[3] ]->distance ){
+                index[3] = i;
+            }
+        }
+        /*
         for(i = 0; i < PSIZE; i++){ //Atualiza as gerações
             copiar(population[i], filhos[i]->harbor);
             
+            if(population[i]->distance < Melhor->distance){ //Atualiza a melhor solução corrente
+                copiar(Melhor, population[i]->harbor);
+                ultMelhor = gerAtual;
+            }
+        }*/
+
+        if(filhos[ index[0] ]->distance < population[ index[2] ]->distance){
+            copiar(population[ index[2] ], filhos[ index[0] ]->harbor);
+            if(filhos[ index[1] ]->distance < population[ index[3] ]->distance)
+                copiar(population[ index[3] ], filhos[ index[1] ]->harbor);
+        }else if(filhos[ index[1] ]->distance < population[ index[2] ]->distance){
+            copiar(population[ index[2] ], filhos[ index[1] ]->harbor);
+        }else if(filhos[ index[0] ]->distance < population[ index[3] ]->distance){
+            copiar(population[ index[3] ], filhos[ index[0] ]->harbor);
+        }else if(filhos[ index[1] ]->distance < population[ index[3] ]->distance){
+            copiar(population[ index[3] ], filhos[ index[1] ]->harbor);
+        }
+        /*
+        copiar(population[ index[2] ], filhos[ index[0] ]->harbor);
+        copiar(population[ index[3] ], filhos[ index[1] ]->harbor);
+        */
+        for(i = 0; i < PSIZE; i++){ //Atualiza as gerações
+           
             if(population[i]->distance < Melhor->distance){ //Atualiza a melhor solução corrente
                 copiar(Melhor, population[i]->harbor);
                 ultMelhor = gerAtual;
@@ -482,9 +593,11 @@ Solution* random_swap(Solution* individuo){
     s->distance = individuo->distance;
     
     for(int i=0; i < 100; i++){
+        //gera uma cópia da solução de entrada
         for(int k=0; k < G->V; k++)
             copy[k] = individuo->harbor[k];
-        do{
+        //permanece no loop até encontrar uma solução válida
+        while(1){
             index_1 = rand() % (G->V-1);
             do{
                 index_2 = rand() % (G->V-1);
@@ -493,7 +606,15 @@ Solution* random_swap(Solution* individuo){
             aux = copy[index_2];
             copy[index_2] = copy[index_1];
             copy[index_1] = aux;
-        }while(!is_Solution(copy));
+
+            if(is_Solution(copy))
+                break;
+
+            aux = copy[index_2];
+            copy[index_2] = copy[index_1];
+            copy[index_1] = aux;
+        }
+        //calcula o custo
         
         distance_i = G->adj[0][copy[0]];
         for(int j=1; j < G->V; j++)
