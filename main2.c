@@ -27,7 +27,7 @@ int indexOf(Solution **Arr, int value);
 void order1Crossover(Solution** Pai, int **filho);
 void merge(Solution **Arr, int start, int middle, int end);
 void mergeSort(Solution **Arr, int start, int end);
-
+Solution* fixed_swap(Solution* individuo);
 Solution* construcao();
 int AlgGenetico();
 
@@ -42,7 +42,7 @@ int main(){
     scanf("%d", &OPT_VAL);
     //parâmetros do algoritmo genético
     PSIZE = DIM * 2;
-    MAX_ITER = 100;
+    MAX_ITER = 1000;
     PERC_MUT = 5;
 
 
@@ -50,7 +50,7 @@ int main(){
     //sei la
 
     long int result, best, cbest, media[2];
-    int qt_iter = 1;
+    int qt_iter = 100;
 
     for(int i=1; i <= 20; i++){
         PERC_MUT = i;
@@ -463,7 +463,7 @@ int AlgGenetico(){
     while((gerAtual - ultMelhor) < MAX_ITER){
         if((gerAtual - ultMelhor) == (MAX_ITER/2)){
             for(i = 0; i < PSIZE; i++)
-                copiar(population[i], random_swap(population[i])->harbor);
+                copiar(population[i], fixed_swap(population[i])->harbor);
         }
         //Cruzamento
         numFilhos = 0;
@@ -585,40 +585,31 @@ int AlgGenetico(){
     return res;
 }
 
-Solution* random_swap(Solution* individuo){
+Solution* fixed_swap(Solution* individuo){
     int index_1, index_2, aux, distance_i;
-    int *copy = malloc(sizeof(int)*(G->V));
-    Solution *s = malloc(sizeof(Solution));
-    s->harbor = malloc(sizeof(int) * (G->V));
-    s->distance = individuo->distance;
+    int copy[DIM];
+    Solution *s = new_solution();
+    copiar(s, individuo->harbor);
     
-    for(int i=0; i < 100; i++){
-        //gera uma cópia da solução de entrada
-        for(int k=0; k < G->V; k++)
-            copy[k] = individuo->harbor[k];
-        //permanece no loop até encontrar uma solução válida
-        while(1){
-            index_1 = rand() % (G->V-1);
-            do{
-                index_2 = rand() % (G->V-1);
-            }while(index_1 == index_2);
+    for(int i=0; i < DIM-1; i++){
+        for(int j=i+1; j < DIM; j++){
+            //gera uma cópia da solução de entrada
+            for(int k=0; k < G->V; k++)
+                copy[k] = individuo->harbor[k];
+            //encontra uma solução válida
+            aux = copy[j];
+            copy[j] = copy[i];
+            copy[i] = aux;
 
-            aux = copy[index_2];
-            copy[index_2] = copy[index_1];
-            copy[index_1] = aux;
+            if(is_Solution(copy) && fitness(copy) < s->distance){
+                copiar(s, copy);
+                continue;
+            }
 
-            if(is_Solution(copy))
-                break;
-
-            aux = copy[index_2];
-            copy[index_2] = copy[index_1];
-            copy[index_1] = aux;
+            aux = copy[j];
+            copy[j] = copy[i];
+            copy[i] = aux;
         }
-        //calcula o custo
-        
-        distance_i = G->adj[0][copy[0]];
-        for(int j=1; j < G->V; j++)
-            distance_i += G->adj[ copy[j-1] ][ copy[j] ];
 
         if(distance_i < s->distance){
             s->distance = distance_i;
@@ -626,6 +617,6 @@ Solution* random_swap(Solution* individuo){
                 s->harbor[k] = copy[k];
         }
     }
-    free(copy);
+    
     return s;
 }
