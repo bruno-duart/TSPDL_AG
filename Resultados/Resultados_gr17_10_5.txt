@@ -1,0 +1,21 @@
+Número Máximo de Gerações sem Melhora: 10
+[  1 % ]  MediaRes =  2087   MediaCont =    15   BestRes =  2085 ( 85 %)  ErroMed = 0.10  ErroMenor = 0.00
+[  2 % ]  MediaRes =  2087   MediaCont =    15   BestRes =  2085 ( 88 %)  ErroMed = 0.10  ErroMenor = 0.00
+[  3 % ]  MediaRes =  2089   MediaCont =    15   BestRes =  2085 ( 78 %)  ErroMed = 0.19  ErroMenor = 0.00
+[  4 % ]  MediaRes =  2087   MediaCont =    15   BestRes =  2085 ( 87 %)  ErroMed = 0.10  ErroMenor = 0.00
+[  5 % ]  MediaRes =  2087   MediaCont =    15   BestRes =  2085 ( 85 %)  ErroMed = 0.10  ErroMenor = 0.00
+[  6 % ]  MediaRes =  2090   MediaCont =    15   BestRes =  2085 ( 78 %)  ErroMed = 0.24  ErroMenor = 0.00
+[  7 % ]  MediaRes =  2093   MediaCont =    16   BestRes =  2085 ( 71 %)  ErroMed = 0.38  ErroMenor = 0.00
+[  8 % ]  MediaRes =  2089   MediaCont =    15   BestRes =  2085 ( 80 %)  ErroMed = 0.19  ErroMenor = 0.00
+[  9 % ]  MediaRes =  2087   MediaCont =    15   BestRes =  2085 ( 83 %)  ErroMed = 0.10  ErroMenor = 0.00
+[ 10 % ]  MediaRes =  2095   MediaCont =    15   BestRes =  2085 ( 78 %)  ErroMed = 0.48  ErroMenor = 0.00
+[ 11 % ]  MediaRes =  2086   MediaCont =    15   BestRes =  2085 ( 90 %)  ErroMed = 0.05  ErroMenor = 0.00
+[ 12 % ]  MediaRes =  2089   MediaCont =    15   BestRes =  2085 ( 79 %)  ErroMed = 0.19  ErroMenor = 0.00
+[ 13 % ]  MediaRes =  2090   MediaCont =    15   BestRes =  2085 ( 80 %)  ErroMed = 0.24  ErroMenor = 0.00
+[ 14 % ]  MediaRes =  2090   MediaCont =    15   BestRes =  2085 ( 85 %)  ErroMed = 0.24  ErroMenor = 0.00
+[ 15 % ]  MediaRes =  2088   MediaCont =    15   BestRes =  2085 ( 82 %)  ErroMed = 0.14  ErroMenor = 0.00
+[ 16 % ]  MediaRes =  2090   MediaCont =    15   BestRes =  2085 ( 86 %)  ErroMed = 0.24  ErroMenor = 0.00
+[ 17 % ]  MediaRes =  2088   MediaCont =    15   BestRes =  2085 ( 85 %)  ErroMed = 0.14  ErroMenor = 0.00
+[ 18 % ]  MediaRes =  2087   MediaCont =    15   BestRes =  2085 ( 83 %)  ErroMed = 0.10  ErroMenor = 0.00
+[ 19 % ]  MediaRes =  2089   MediaCont =    15   BestRes =  2085 ( 82 %)  ErroMed = 0.19  ErroMenor = 0.00
+[ 20 % ]  MediaRes =  2088   MediaCont =    16   BestRes =  2085 ( 78 %)  ErroMed = 0.14  ErroMenor = 0.00

@@ -1,0 +1,21 @@
+Número Máximo de Gerações sem Melhora: 10
+[  1 % ]  MediaRes =  1040   MediaCont =    17   BestRes =  1023 (  5 %)  ErroMed = 9.13  ErroMenor = 7.35
+[  2 % ]  MediaRes =  1034   MediaCont =    17   BestRes =  1023 (  9 %)  ErroMed = 8.50  ErroMenor = 7.35
+[  3 % ]  MediaRes =  1037   MediaCont =    17   BestRes =  1023 ( 11 %)  ErroMed = 8.81  ErroMenor = 7.35
+[  4 % ]  MediaRes =  1038   MediaCont =    17   BestRes =  1023 (  6 %)  ErroMed = 8.92  ErroMenor = 7.35
+[  5 % ]  MediaRes =  1036   MediaCont =    17   BestRes =  1023 ( 12 %)  ErroMed = 8.71  ErroMenor = 7.35
+[  6 % ]  MediaRes =  1037   MediaCont =    17   BestRes =  1023 (  8 %)  ErroMed = 8.81  ErroMenor = 7.35
+[  7 % ]  MediaRes =  1039   MediaCont =    17   BestRes =  1023 (  9 %)  ErroMed = 9.02  ErroMenor = 7.35
+[  8 % ]  MediaRes =  1036   MediaCont =    17   BestRes =  1023 (  9 %)  ErroMed = 8.71  ErroMenor = 7.35
+[  9 % ]  MediaRes =  1036   MediaCont =    17   BestRes =  1023 ( 10 %)  ErroMed = 8.71  ErroMenor = 7.35
+[ 10 % ]  MediaRes =  1038   MediaCont =    17   BestRes =  1023 (  7 %)  ErroMed = 8.92  ErroMenor = 7.35
+[ 11 % ]  MediaRes =  1037   MediaCont =    17   BestRes =  1023 ( 11 %)  ErroMed = 8.81  ErroMenor = 7.35
+[ 12 % ]  MediaRes =  1038   MediaCont =    17   BestRes =  1023 (  8 %)  ErroMed = 8.92  ErroMenor = 7.35
+[ 13 % ]  MediaRes =  1041   MediaCont =    17   BestRes =  1023 (  8 %)  ErroMed = 9.23  ErroMenor = 7.35
+[ 14 % ]  MediaRes =  1038   MediaCont =    16   BestRes =  1023 (  8 %)  ErroMed = 8.92  ErroMenor = 7.35
+[ 15 % ]  MediaRes =  1034   MediaCont =    17   BestRes =  1023 ( 15 %)  ErroMed = 8.50  ErroMenor = 7.35
+[ 16 % ]  MediaRes =  1037   MediaCont =    17   BestRes =  1023 ( 12 %)  ErroMed = 8.81  ErroMenor = 7.35
+[ 17 % ]  MediaRes =  1039   MediaCont =    17   BestRes =  1023 (  8 %)  ErroMed = 9.02  ErroMenor = 7.35
+[ 18 % ]  MediaRes =  1037   MediaCont =    17   BestRes =  1023 (  9 %)  ErroMed = 8.81  ErroMenor = 7.35
+[ 19 % ]  MediaRes =  1038   MediaCont =    17   BestRes =  1023 (  9 %)  ErroMed = 8.92  ErroMenor = 7.35
+[ 20 % ]  MediaRes =  1038   MediaCont =    17   BestRes =  1023 (  8 %)  ErroMed = 8.92  ErroMenor = 7.35

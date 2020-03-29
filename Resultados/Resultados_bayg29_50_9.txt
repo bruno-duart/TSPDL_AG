@@ -1,0 +1,21 @@
+Número Máximo de Gerações sem Melhora: 10
+[  1 % ]  MediaRes =  2018   MediaCont =    15   BestRes =  1998 (  3 %)  ErroMed = 1.56  ErroMenor = 0.55
+[  2 % ]  MediaRes =  2022   MediaCont =    15   BestRes =  1998 (  3 %)  ErroMed = 1.76  ErroMenor = 0.55
+[  3 % ]  MediaRes =  2019   MediaCont =    15   BestRes =  1998 (  6 %)  ErroMed = 1.61  ErroMenor = 0.55
+[  4 % ]  MediaRes =  2024   MediaCont =    16   BestRes =  1998 (  4 %)  ErroMed = 1.86  ErroMenor = 0.55
+[  5 % ]  MediaRes =  2017   MediaCont =    15   BestRes =  1998 (  5 %)  ErroMed = 1.51  ErroMenor = 0.55
+[  6 % ]  MediaRes =  2021   MediaCont =    15   BestRes =  1998 (  9 %)  ErroMed = 1.71  ErroMenor = 0.55
+[  7 % ]  MediaRes =  2016   MediaCont =    15   BestRes =  1998 (  3 %)  ErroMed = 1.46  ErroMenor = 0.55
+[  8 % ]  MediaRes =  2017   MediaCont =    15   BestRes =  1998 (  6 %)  ErroMed = 1.51  ErroMenor = 0.55
+[  9 % ]  MediaRes =  2016   MediaCont =    15   BestRes =  1998 (  6 %)  ErroMed = 1.46  ErroMenor = 0.55
+[ 10 % ]  MediaRes =  2016   MediaCont =    15   BestRes =  1998 (  9 %)  ErroMed = 1.46  ErroMenor = 0.55
+[ 11 % ]  MediaRes =  2018   MediaCont =    15   BestRes =  1998 (  2 %)  ErroMed = 1.56  ErroMenor = 0.55
+[ 12 % ]  MediaRes =  2018   MediaCont =    15   BestRes =  1998 (  1 %)  ErroMed = 1.56  ErroMenor = 0.55
+[ 13 % ]  MediaRes =  2018   MediaCont =    15   BestRes =  1998 (  2 %)  ErroMed = 1.56  ErroMenor = 0.55
+[ 14 % ]  MediaRes =  2017   MediaCont =    15   BestRes =  1998 (  7 %)  ErroMed = 1.51  ErroMenor = 0.55
+[ 15 % ]  MediaRes =  2019   MediaCont =    15   BestRes =  1998 (  6 %)  ErroMed = 1.61  ErroMenor = 0.55
+[ 16 % ]  MediaRes =  2019   MediaCont =    15   BestRes =  1998 (  3 %)  ErroMed = 1.61  ErroMenor = 0.55
+[ 17 % ]  MediaRes =  2019   MediaCont =    15   BestRes =  1998 (  6 %)  ErroMed = 1.61  ErroMenor = 0.55
+[ 18 % ]  MediaRes =  2018   MediaCont =    15   BestRes =  1998 (  4 %)  ErroMed = 1.56  ErroMenor = 0.55
+[ 19 % ]  MediaRes =  2016   MediaCont =    15   BestRes =  1998 (  3 %)  ErroMed = 1.46  ErroMenor = 0.55
+[ 20 % ]  MediaRes =  2018   MediaCont =    15   BestRes =  1998 (  2 %)  ErroMed = 1.56  ErroMenor = 0.55
