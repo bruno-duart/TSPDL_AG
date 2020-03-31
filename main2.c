@@ -12,8 +12,9 @@ typedef struct {
 //variáveis globais
 Graph *G;
 size_t CONT_GER;
-int DIM, PSIZE, MAX_ITER, PERC_MUT, OPT_VAL;
+int DIM, PSIZE, PERC_MUT, OPT_VAL, MAX_ITER;
 int *DEMAND, *DRAFT;
+
 
 int* ini_array();
 void print_arr(int *arr);
@@ -40,21 +41,21 @@ int main(){
     scanf("%d", &OPT_VAL);
     //parâmetros do algoritmo genético
     PSIZE = DIM * 2;
-    MAX_ITER = 100;
     PERC_MUT = 5;
+    MAX_ITER = 100;
 
-
-    tempo1 = clock();
     //sei la
     printf("Número Máximo de Gerações sem Melhora: %d\n", MAX_ITER);
 
-    long int result, best, cbest, media[2];
+    long int result, best, cbest = 0, media[2];
     int qt_iter = 100;
     
+    //loop para variação da taxa de mutação
     for(int i=1; i <= 20; i++){
         PERC_MUT = i;
         media[0] = media[1] = 0;
         best = 0;
+        //loop de execução do algoritmo
         for(int j=0; j < qt_iter; j++){
             tempo1 = clock();
             result = AlgGenetico();
@@ -418,13 +419,16 @@ int AlgGenetico(){
             copiar(Melhor, population[i]->harbor);
         filhos[i] = new_solution();
     }
+    
+    for(i = 0; i < PSIZE; i++)
+        copiar(population[i], fixed_swap(population[i])->harbor);
 
     //início do ciclo
     CONT_GER = 0;
     while((gerAtual - ultMelhor) < MAX_ITER){
-        if((gerAtual - ultMelhor) % (MAX_ITER/4) == 0)
+        /*if((gerAtual - ultMelhor) % (4) == 0)
             for(i = 0; i < PSIZE; i++)
-                copiar(population[i], fixed_swap(population[i])->harbor);
+                copiar(population[i], fixed_swap(population[i])->harbor);*/
         
         //Cruzamento
         numFilhos = 0;
@@ -445,7 +449,7 @@ int AlgGenetico(){
         //Mutação (taxa entre 0 e 20%)
         taxaMutacao = ((gerAtual - ultMelhor) * PERC_MUT) / MAX_ITER;
         for(i = 0; i < numFilhos; i++){
-            if((rand() % 100) < taxaMutacao){
+            if((rand() % 100) < taxaMutacao){//PERC_MUT){
                 i = rand() % numFilhos;
                 mutacao(filhos[i]);
             }
@@ -456,6 +460,8 @@ int AlgGenetico(){
             copiar(filhos[numFilhos++], population[i]->harbor);
         }
 
+        //Substituindo os 2 piores
+        
         //0 e 1 para os melhores filhos
         //2 e 3 para os piores pais
         index[0] = index[2] = 0; 
@@ -501,6 +507,16 @@ int AlgGenetico(){
         }else if(filhos[ index[1] ]->distance < population[ index[3] ]->distance){
             copiar(population[ index[3] ], filhos[ index[1] ]->harbor);
         }
+
+        /*
+        while(numFilhos < PSIZE){
+            i = rand() % PSIZE;
+            copiar(filhos[numFilhos++], population[i]->harbor);
+        }*/
+        
+        if((gerAtual - ultMelhor) % (4) == 0)
+            for(i = 0; i < PSIZE; i++)
+                copiar(population[i], fixed_swap(population[i])->harbor);
 
         for(i = 0; i < PSIZE; i++){ //Atualiza as gerações
            
