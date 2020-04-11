@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
 
-gcc main2.c -o main
+gcc main3.c -o main
 
 for file in burma14 ulysses16 gr17 gr21 ulysses22 fri26 bayg29 gr48
 do

@@ -1,21 +1,24 @@
-Número Máximo de Gerações sem Melhora: 10
-[  1 % ]  MediaRes =  2353   MediaCont =    16   BestRes =  2270 ( 11 %)  ErroMed = 3.66  ErroMenor = 0.00
-[  2 % ]  MediaRes =  2353   MediaCont =    16   BestRes =  2270 (  6 %)  ErroMed = 3.66  ErroMenor = 0.00
-[  3 % ]  MediaRes =  2347   MediaCont =    16   BestRes =  2270 (  6 %)  ErroMed = 3.39  ErroMenor = 0.00
-[  4 % ]  MediaRes =  2355   MediaCont =    16   BestRes =  2270 (  7 %)  ErroMed = 3.74  ErroMenor = 0.00
-[  5 % ]  MediaRes =  2349   MediaCont =    16   BestRes =  2270 (  9 %)  ErroMed = 3.48  ErroMenor = 0.00
-[  6 % ]  MediaRes =  2343   MediaCont =    16   BestRes =  2270 (  9 %)  ErroMed = 3.22  ErroMenor = 0.00
-[  7 % ]  MediaRes =  2356   MediaCont =    16   BestRes =  2270 (  7 %)  ErroMed = 3.79  ErroMenor = 0.00
-[  8 % ]  MediaRes =  2345   MediaCont =    16   BestRes =  2270 ( 11 %)  ErroMed = 3.30  ErroMenor = 0.00
-[  9 % ]  MediaRes =  2363   MediaCont =    16   BestRes =  2270 (  4 %)  ErroMed = 4.10  ErroMenor = 0.00
-[ 10 % ]  MediaRes =  2356   MediaCont =    17   BestRes =  2270 (  7 %)  ErroMed = 3.79  ErroMenor = 0.00
-[ 11 % ]  MediaRes =  2343   MediaCont =    16   BestRes =  2270 ( 10 %)  ErroMed = 3.22  ErroMenor = 0.00
-[ 12 % ]  MediaRes =  2350   MediaCont =    16   BestRes =  2270 (  5 %)  ErroMed = 3.52  ErroMenor = 0.00
-[ 13 % ]  MediaRes =  2353   MediaCont =    16   BestRes =  2270 (  9 %)  ErroMed = 3.66  ErroMenor = 0.00
-[ 14 % ]  MediaRes =  2351   MediaCont =    16   BestRes =  2270 ( 13 %)  ErroMed = 3.57  ErroMenor = 0.00
-[ 15 % ]  MediaRes =  2357   MediaCont =    16   BestRes =  2270 (  9 %)  ErroMed = 3.83  ErroMenor = 0.00
-[ 16 % ]  MediaRes =  2350   MediaCont =    16   BestRes =  2270 (  5 %)  ErroMed = 3.52  ErroMenor = 0.00
-[ 17 % ]  MediaRes =  2355   MediaCont =    16   BestRes =  2270 (  7 %)  ErroMed = 3.74  ErroMenor = 0.00
-[ 18 % ]  MediaRes =  2356   MediaCont =    16   BestRes =  2270 (  7 %)  ErroMed = 3.79  ErroMenor = 0.00
-[ 19 % ]  MediaRes =  2352   MediaCont =    16   BestRes =  2270 (  8 %)  ErroMed = 3.61  ErroMenor = 0.00
-[ 20 % ]  MediaRes =  2339   MediaCont =    17   BestRes =  2270 (  7 %)  ErroMed = 3.04  ErroMenor = 0.00
+Ótimo Conhecido: 2270
+Número de Repetições do AG: 100
+Máximo de Gerações sem Melhora: 50
+[  0 % ]  MediaRes =  2331   MediaCont =    6   BestRes =  2270 ( 12 %)  ErroMed =  2.69  ErroMenor =  0.00  Tempo = 0.017031
+[  5 % ]  MediaRes =  2328   MediaCont =    8   BestRes =  2270 ( 24 %)  ErroMed =  2.56  ErroMenor =  0.00  Tempo = 0.017656
+[ 10 % ]  MediaRes =  2311   MediaCont =    9   BestRes =  2270 ( 34 %)  ErroMed =  1.81  ErroMenor =  0.00  Tempo = 0.018125
+[ 15 % ]  MediaRes =  2319   MediaCont =   11   BestRes =  2270 ( 23 %)  ErroMed =  2.16  ErroMenor =  0.00  Tempo = 0.018750
+[ 20 % ]  MediaRes =  2326   MediaCont =   12   BestRes =  2270 ( 23 %)  ErroMed =  2.47  ErroMenor =  0.00  Tempo = 0.019218
+[ 25 % ]  MediaRes =  2331   MediaCont =   13   BestRes =  2270 ( 16 %)  ErroMed =  2.69  ErroMenor =  0.00  Tempo = 0.019843
+[ 30 % ]  MediaRes =  2320   MediaCont =   16   BestRes =  2270 ( 26 %)  ErroMed =  2.20  ErroMenor =  0.00  Tempo = 0.020781
+[ 35 % ]  MediaRes =  2323   MediaCont =   17   BestRes =  2270 ( 21 %)  ErroMed =  2.33  ErroMenor =  0.00  Tempo = 0.021406
+[ 40 % ]  MediaRes =  2326   MediaCont =   18   BestRes =  2270 ( 21 %)  ErroMed =  2.47  ErroMenor =  0.00  Tempo = 0.021875
+[ 45 % ]  MediaRes =  2329   MediaCont =   20   BestRes =  2270 ( 18 %)  ErroMed =  2.60  ErroMenor =  0.00  Tempo = 0.022500
+[ 50 % ]  MediaRes =  2331   MediaCont =   22   BestRes =  2270 ( 21 %)  ErroMed =  2.69  ErroMenor =  0.00  Tempo = 0.023593
+[ 55 % ]  MediaRes =  2349   MediaCont =   23   BestRes =  2270 (  9 %)  ErroMed =  3.48  ErroMenor =  0.00  Tempo = 0.024375
+[ 60 % ]  MediaRes =  2351   MediaCont =   23   BestRes =  2270 ( 11 %)  ErroMed =  3.57  ErroMenor =  0.00  Tempo = 0.024531
+[ 65 % ]  MediaRes =  2353   MediaCont =   25   BestRes =  2270 ( 10 %)  ErroMed =  3.66  ErroMenor =  0.00  Tempo = 0.025625
+[ 70 % ]  MediaRes =  2364   MediaCont =   27   BestRes =  2270 (  7 %)  ErroMed =  4.14  ErroMenor =  0.00  Tempo = 0.026718
+[ 75 % ]  MediaRes =  2350   MediaCont =   33   BestRes =  2270 ( 15 %)  ErroMed =  3.52  ErroMenor =  0.00  Tempo = 0.029062
+[ 80 % ]  MediaRes =  2360   MediaCont =   39   BestRes =  2270 ( 11 %)  ErroMed =  3.96  ErroMenor =  0.00  Tempo = 0.031718
+[ 85 % ]  MediaRes =  2360   MediaCont =   49   BestRes =  2270 ( 17 %)  ErroMed =  3.96  ErroMenor =  0.00  Tempo = 0.035312
+[ 90 % ]  MediaRes =  2373   MediaCont =   47   BestRes =  2270 (  7 %)  ErroMed =  4.54  ErroMenor =  0.00  Tempo = 0.035781
+[ 95 % ]  MediaRes =  2387   MediaCont =   52   BestRes =  2270 (  5 %)  ErroMed =  5.15  ErroMenor =  0.00  Tempo = 0.037656
+[100 % ]  MediaRes =  2415   MediaCont =   35   BestRes =  2270 (  2 %)  ErroMed =  6.39  ErroMenor =  0.00  Tempo = 0.032656
