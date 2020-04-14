@@ -34,7 +34,7 @@ Solution* construcao();
 int AlgGenetico();
 
 int main(){
-    clock_t tempo;
+    clock_t tempo, menortempo;
     srand(time(NULL));
     //Inicialização dos valores
     scanf("%d", &DIM);
@@ -43,8 +43,8 @@ int main(){
     DRAFT = ini_array(DIM);
     scanf("%d", &OPT_VAL);
     PSIZE = DIM * 2;
-    MAX_ITER = 50;
-    NUM_TESTES = 100;
+    MAX_ITER = 100;
+    NUM_TESTES = 50;
 
     printf("Ótimo Conhecido: %d\n", OPT_VAL);
     printf("Número de Repetições do AG: %d\n", NUM_TESTES);
@@ -67,6 +67,7 @@ int main(){
             if(result < best || !best){
                 best = result;
                 cbest = 1;
+                menortempo = tempo;
             }
             else if(result == best)
                 cbest++;
@@ -77,9 +78,9 @@ int main(){
         media[2] /= NUM_TESTES;
         cbest *= 100.0 / (float) NUM_TESTES;
         printf("[%3i %% ]  MediaRes = %5ld   MediaCont = %4ld   "\
-                "BestRes = %5ld (%3i %%)  ErroMed = %5.2f  ErroMenor = %5.2f  Tempo = %lf\n", i, media[0], 
+                "BestRes = %5ld (%3i %%)  ErroMed = %5.2f  ErroMenor = %5.2f  Tempo = %lf  MenTempo = %lf\n", i, media[0], 
                 (media[1]-MAX_ITER), best, (int) cbest,(media[0]-OPT_VAL)*100.0/(OPT_VAL), (best-OPT_VAL)*100.0/(OPT_VAL),
-                (double) media[2]/CLOCKS_PER_SEC);
+                (double) media[2]/CLOCKS_PER_SEC, (double) menortempo/CLOCKS_PER_SEC);
     }
     //printf("\nCONT_GER = %ld\n\n", (long int) CONT_GER);
     
@@ -414,11 +415,66 @@ void copiar(Solution *S, int *solucao){
     S->distance = fitness(solucao);
 }
 
+void selectSubstitute(Solution **populacao, Solution **filhos){
+    //posições 0 e 1 para os melhores filhos
+    //posições 2 e 3 para os piores pais
+    int index[4], i;
+
+    index[0] = index[2] = 0; 
+    index[1] = index[3] = 1;
+
+    /*Verifica-se quais os melhores filhos obtidos no cruzamento atual
+     *e armazena-os nas posições 0 e 1 do array index*/
+    if(filhos[ index[0] ]->distance > filhos[ index[1] ] ->distance){
+        i = index[0]; 
+        index[0] = index[1];
+        index[1] = i;
+    }
+    for(i = 2; i < PSIZE; i++){
+        if(filhos[i]->distance < filhos[ index[0] ]->distance){
+            index[1] = index[0];
+            index[0] = i;
+        } else if(filhos[i]->distance < filhos[ index[1] ]->distance){
+            index[1] = i;
+        }
+    }
+    /*Verifica-se quais os piores elementos da geração atual
+     *e armazena-os nas posições 2 e 3 do array index*/
+    if(populacao[ index[2] ]->distance < populacao[ index[3] ] ->distance){
+        i = index[2];
+        index[2] = index[3];
+        index[3] = i;
+    }
+    for(i = 2; i < PSIZE; i++){
+        if(populacao[i]->distance > populacao[ index[2] ]->distance){
+            index[3] = index[2];
+            index[2] = i;
+        } else if(populacao[i]->distance > populacao[ index[3] ]->distance ){
+            index[3] = i;
+        }
+    }
+    /*Verifica as possibilidades de inserção dos filhos na geração dos pais
+     *de acordo com a ordem do valor da fitness entre os avaliados. */
+    if(filhos[ index[0] ]->distance < populacao[ index[3] ]->distance){
+        copiar(populacao[ index[3] ], filhos[ index[0] ]->harbor);
+        if(filhos[ index[1] ]->distance < populacao[ index[2] ]->distance)//O segundo melhor filho
+            copiar(populacao[ index[2] ], filhos[ index[1] ]->harbor);
+    }else if(filhos[ index[1] ]->distance < populacao[ index[2] ]->distance){
+        copiar(populacao[ index[2] ], filhos[ index[1] ]->harbor);
+    }else if(filhos[ index[0] ]->distance < populacao[ index[2] ]->distance){
+        copiar(populacao[ index[2] ], filhos[ index[0] ]->harbor);
+    }else if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance){
+        copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
+    }
+}
+
+void selectMergesort(Solution **populacao, Solution **filhos){}
+
 int AlgGenetico(){
     //variáveis
     int i, j, numFilhos, nFighter, taxaMutacao;
     int gerAtual = 0, ultMelhor = 0;
-    int index[4], *bebes[2];
+    int *bebes[2];
     
     Solution **populacao = malloc(sizeof(Solution*) * PSIZE);
     Solution **filhos = malloc(sizeof(Solution*) * PSIZE);
@@ -469,51 +525,9 @@ int AlgGenetico(){
             copiar(filhos[numFilhos++], populacao[i]->harbor);
         }
 
-        //posições 0 e 1 para os melhores filhos
-        //posições 2 e 3 para os piores pais
-        index[0] = index[2] = 0; 
-        index[1] = index[3] = 1;
 
-        if(filhos[ index[0] ]->distance > filhos[ index[1] ] ->distance){
-            i = index[0]; 
-            index[0] = index[1];
-            index[1] = i;
-        }
-
-        for(i = 2; i < PSIZE; i++){
-            if(filhos[i]->distance < filhos[ index[0] ]->distance){
-                index[1] = index[0];
-                index[0] = i;
-            } else if(filhos[i]->distance < filhos[ index[1] ]->distance){
-                index[1] = i;
-            }
-        }
-
-        if(populacao[ index[2] ]->distance < populacao[ index[3] ] ->distance){
-            i = index[2];
-            index[2] = index[3];
-            index[3] = i;
-        }
-        for(i = 2; i < PSIZE; i++){
-            if(populacao[i]->distance > populacao[ index[2] ]->distance){
-                index[3] = index[2];
-                index[2] = i;
-            } else if(populacao[i]->distance > populacao[ index[3] ]->distance ){
-                index[3] = i;
-            }
-        }
-
-        if(filhos[ index[0] ]->distance < populacao[ index[2] ]->distance){
-            copiar(populacao[ index[2] ], filhos[ index[0] ]->harbor);
-            if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance)
-                copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
-        }else if(filhos[ index[1] ]->distance < populacao[ index[2] ]->distance){
-            copiar(populacao[ index[2] ], filhos[ index[1] ]->harbor);
-        }else if(filhos[ index[0] ]->distance < populacao[ index[3] ]->distance){
-            copiar(populacao[ index[3] ], filhos[ index[0] ]->harbor);
-        }else if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance){
-            copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
-        }
+        //Seleção dos agentes da população original e dos filhos a serem substituídos
+        selectSubstitute(populacao, filhos);
         
         //Mutação
         taxaMutacao = ((gerAtual - ultMelhor) * PERC_MUT) / MAX_ITER;
@@ -535,7 +549,6 @@ int AlgGenetico(){
                 ultMelhor = gerAtual;
             }
         gerAtual++;
-        //print_arr(melhor->harbor);
     }
     
     ultMelhor = melhor->distance;
@@ -584,7 +597,7 @@ void fixed_swap(Solution* s){
 }
 
 void merge(Solution **Arr, int start, int middle, int end){
-    Solution **temp = malloc(sizeof(Solution) * (end - start + 1)); 
+    Solution *temp[(end - start + 1)]; 
     int i = start, j = middle + 1, k = 0;
 
     while(i <= middle && j <= end){
@@ -611,8 +624,6 @@ void merge(Solution **Arr, int start, int middle, int end){
     }
     for(int i = start; i <= end; i++)
         Arr[i] = temp[i - start];
-    
-    //free(temp);
 }
 
 void mergeSort(Solution **Arr, int start, int end){
