@@ -44,7 +44,7 @@ int main(){
     scanf("%d", &OPT_VAL);
     PSIZE = DIM * 2;
     MAX_ITER = 100;
-    NUM_TESTES = 50;
+    NUM_TESTES = 10;
 
     printf("Ótimo Conhecido: %d\n", OPT_VAL);
     printf("Número de Repetições do AG: %d\n", NUM_TESTES);
@@ -468,7 +468,19 @@ void selectSubstitute(Solution **populacao, Solution **filhos){
     }
 }
 
-void selectMergesort(Solution **populacao, Solution **filhos){}
+void selectMergesort(Solution **populacao, Solution **filhos, int numFilhos){
+    int ind = PSIZE - 1;
+
+    mergeSort(populacao, 0, PSIZE - 1);
+    mergeSort(filhos, 0, numFilhos - 1);
+
+    for(int i = PSIZE - 1; i >= 0; i--)
+        if(filhos[i]->distance < populacao[ind]->distance)
+            if((rand() % 100) < 30)
+                copiar(populacao[ind--], filhos[i]->harbor);   
+    
+    shuffle(populacao, PSIZE);
+}
 
 int AlgGenetico(){
     //variáveis
@@ -525,9 +537,10 @@ int AlgGenetico(){
             copiar(filhos[numFilhos++], populacao[i]->harbor);
         }
 
-
         //Seleção dos agentes da população original e dos filhos a serem substituídos
         selectSubstitute(populacao, filhos);
+        //selectMergesort(populacao, filhos, numFilhos);
+        
         
         //Mutação
         taxaMutacao = ((gerAtual - ultMelhor) * PERC_MUT) / MAX_ITER;
