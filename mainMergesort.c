@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
 #include "grafos.h"
 
 typedef struct {
@@ -43,8 +44,8 @@ int main(){
     DRAFT = ini_array(DIM);
     scanf("%d", &OPT_VAL);
     PSIZE = DIM * 2;
-    MAX_ITER = 100;
-    NUM_TESTES = 10;
+    MAX_ITER = 20;
+    NUM_TESTES = 100;
 
     printf("Ótimo Conhecido: %d\n", OPT_VAL);
     printf("Número de Repetições do AG: %d\n", NUM_TESTES);
@@ -482,6 +483,71 @@ void selectMergesort(Solution **populacao, Solution **filhos, int numFilhos){
     shuffle(populacao, PSIZE);
 }
 
+void array_swap(Solution** arr, int i, int j)
+{
+	Solution* aux = arr[i];
+	arr[i] = arr[j];
+	arr[j] = aux;
+}
+
+void exame(Solution** pais, Solution** filhos, int cota)
+{
+	float avg = 0;
+	int i, j, x, aux;
+	int size = PSIZE * 2;
+	int nbytes = PSIZE*sizeof(Solution*);
+	Solution* p[size];
+	
+	//preenchimento
+	memcpy(p, filhos, nbytes);
+	memcpy(p+PSIZE, pais, nbytes);
+	
+	//calculo da media
+	for(i=0; i<size; i++)
+		avg += p[i]->distance;
+	avg /= (float) size;
+	
+	//seleção do pivô [x]
+	x=0;
+	for(i=1; i<size; i++)
+		if(abs(p[i]->distance - avg) < abs(p[x]->distance - avg))
+			x = i;
+	
+	//aplicação da cota
+	for(i=0; i < cota; i++)
+	{
+		aux = i;
+		//seleção do melhor
+		for(j = i+1; j < size; j++)
+			if(p[j]->distance < p[aux]->distance)
+				aux = j;
+		array_swap(p, i, aux);
+	}
+	
+	//pivoteamento
+	array_swap(p, i, x);
+	x=i++;
+	j=size-1;
+	while(i < j)
+	{
+		while(p[i]->distance < p[x]->distance && i < j)
+			i++;
+		while(p[j]->distance > p[x]->distance && j > i)
+			j--;
+		if(i==j)
+			break;
+		array_swap(p,i,j);
+		i++;
+	}
+	if(p[i]->distance > p[x]->distance)
+		i--;
+	array_swap(p, i, x);
+	
+	//restituição da população de entrada
+	memcpy(pais, p, nbytes);
+	memcpy(filhos, p+PSIZE, nbytes);
+}
+
 int AlgGenetico(){
     //variáveis
     int i, j, numFilhos, nFighter, taxaMutacao;
@@ -538,9 +604,9 @@ int AlgGenetico(){
         }
 
         //Seleção dos agentes da população original e dos filhos a serem substituídos
-        selectSubstitute(populacao, filhos);
+        //selectSubstitute(populacao, filhos);
         //selectMergesort(populacao, filhos, numFilhos);
-        
+        exame(populacao, filhos, (int) PSIZE * 0.1);
         
         //Mutação
         taxaMutacao = ((gerAtual - ultMelhor) * PERC_MUT) / MAX_ITER;
