@@ -40,7 +40,7 @@ int main(){
     DRAFT = ini_array(DIM);
     scanf("%d", &OPT_VAL);
     PSIZE = DIM * 2;
-    MAX_ITER = 50;
+    MAX_ITER = 100;
     NUM_TESTES = 100;
 
     printf("Ótimo Conhecido: %d\n", OPT_VAL);
@@ -49,7 +49,7 @@ int main(){
     long int result, best, cbest, media[3];
     
     //variação da taxa de mutação
-    for(int i=0; i <= 100; i+=5){
+    for(int i=0; i <= 50; i+=5){
         PERC_MUT = i;
         media[0] = media[1] = media[2] = 0;
         best = 0;
@@ -411,6 +411,73 @@ void copiar(Solution *S, int *solucao){
     S->distance = fitness(solucao);
 }
 
+void selectSubstitute(Solution **populacao, Solution **filhos){
+    //posições 0 e 1 para os melhores filhos
+    //posições 2 e 3 para os piores pais
+    int index[4], i;
+
+    index[0] = index[2] = 0; 
+    index[1] = index[3] = 1;
+
+    /*Verifica-se quais os melhores filhos obtidos no cruzamento atual
+     *e armazena-os nas posições 0 e 1 do array index*/
+    if(filhos[ index[0] ]->distance > filhos[ index[1] ] ->distance){
+        i = index[0]; 
+        index[0] = index[1];
+        index[1] = i;
+    }
+    for(i = 2; i < PSIZE; i++){
+        if(filhos[i]->distance < filhos[ index[0] ]->distance){
+            index[1] = index[0];
+            index[0] = i;
+        } else if(filhos[i]->distance < filhos[ index[1] ]->distance){
+            index[1] = i;
+        }
+    }
+    /*Verifica-se quais os piores elementos da geração atual
+     *e armazena-os nas posições 2 e 3 do array index*/
+    if(populacao[ index[2] ]->distance < populacao[ index[3] ] ->distance){
+        i = index[2];
+        index[2] = index[3];
+        index[3] = i;
+    }
+    for(i = 2; i < PSIZE; i++){
+        if(populacao[i]->distance > populacao[ index[2] ]->distance){
+            index[3] = index[2];
+            index[2] = i;
+        } else if(populacao[i]->distance > populacao[ index[3] ]->distance ){
+            index[3] = i;
+        }
+    }
+    /*Verifica as possibilidades de inserção dos filhos na geração dos pais
+     *de acordo com a ordem do valor da fitness entre os avaliados. */
+    if(filhos[ index[0] ]->distance < populacao[ index[3] ]->distance){
+        copiar(populacao[ index[3] ], filhos[ index[0] ]->harbor);
+        if(filhos[ index[1] ]->distance < populacao[ index[2] ]->distance)//O segundo melhor filho
+            copiar(populacao[ index[2] ], filhos[ index[1] ]->harbor);
+    }else if(filhos[ index[1] ]->distance < populacao[ index[2] ]->distance){
+        copiar(populacao[ index[2] ], filhos[ index[1] ]->harbor);
+    }else if(filhos[ index[0] ]->distance < populacao[ index[2] ]->distance){
+        copiar(populacao[ index[2] ], filhos[ index[0] ]->harbor);
+    }else if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance){
+        copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
+    }
+
+    /*Apenas para manter registrado caso queira trocar depois:
+     *   if(filhos[ index[0] ]->distance < populacao[ index[2] ]->distance){
+     *   copiar(populacao[ index[2] ], filhos[ index[0] ]->harbor);
+     *   if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance)
+     *       copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
+     *   }else if(filhos[ index[1] ]->distance < populacao[ index[2] ]->distance){
+     *       copiar(populacao[ index[2] ], filhos[ index[1] ]->harbor);
+     *   }else if(filhos[ index[0] ]->distance < populacao[ index[3] ]->distance){
+     *       copiar(populacao[ index[3] ], filhos[ index[0] ]->harbor);
+     *   }else if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance){
+     *       copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
+     *   }
+     */
+}
+
 int AlgGenetico(){
     //variáveis
     int i, j, numFilhos, nFighter, taxaMutacao;
@@ -464,52 +531,6 @@ int AlgGenetico(){
         while(numFilhos < PSIZE){
             i = rand() % PSIZE;
             copiar(filhos[numFilhos++], populacao[i]->harbor);
-        }
-
-        //posições 0 e 1 para os melhores filhos
-        //posições 2 e 3 para os piores pais
-        index[0] = index[2] = 0; 
-        index[1] = index[3] = 1;
-
-        if(filhos[ index[0] ]->distance > filhos[ index[1] ] ->distance){
-            i = index[0]; 
-            index[0] = index[1];
-            index[1] = i;
-        }
-
-        for(i = 2; i < PSIZE; i++){
-            if(filhos[i]->distance < filhos[ index[0] ]->distance){
-                index[1] = index[0];
-                index[0] = i;
-            } else if(filhos[i]->distance < filhos[ index[1] ]->distance){
-                index[1] = i;
-            }
-        }
-
-        if(populacao[ index[2] ]->distance < populacao[ index[3] ] ->distance){
-            i = index[2];
-            index[2] = index[3];
-            index[3] = i;
-        }
-        for(i = 2; i < PSIZE; i++){
-            if(populacao[i]->distance > populacao[ index[2] ]->distance){
-                index[3] = index[2];
-                index[2] = i;
-            } else if(populacao[i]->distance > populacao[ index[3] ]->distance ){
-                index[3] = i;
-            }
-        }
-
-        if(filhos[ index[0] ]->distance < populacao[ index[2] ]->distance){
-            copiar(populacao[ index[2] ], filhos[ index[0] ]->harbor);
-            if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance)
-                copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
-        }else if(filhos[ index[1] ]->distance < populacao[ index[2] ]->distance){
-            copiar(populacao[ index[2] ], filhos[ index[1] ]->harbor);
-        }else if(filhos[ index[0] ]->distance < populacao[ index[3] ]->distance){
-            copiar(populacao[ index[3] ], filhos[ index[0] ]->harbor);
-        }else if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance){
-            copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
         }
         
         //Mutação
