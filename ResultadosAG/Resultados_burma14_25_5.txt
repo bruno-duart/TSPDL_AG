@@ -1,0 +1,14 @@
+Ótimo Conhecido: 3346
+Número de Repetições do AG: 100
+Máximo de Gerações sem Melhora: 100
+[  0 % ]  MediaRes =  3706   MediaCont =    6   BestRes =  3394 (  1 %)  ErroMed = 10.76  ErroMenor =  1.43  Tempo = 0.006718  MenorTempo = 0.000000
+[  5 % ]  MediaRes =  3545   MediaCont =   65   BestRes =  3346 (  5 %)  ErroMed =  5.95  ErroMenor =  0.00  Tempo = 0.010781  MenorTempo = 0.015625
+[ 10 % ]  MediaRes =  3514   MediaCont =   71   BestRes =  3346 (  3 %)  ErroMed =  5.02  ErroMenor =  0.00  Tempo = 0.011250  MenorTempo = 0.015625
+[ 15 % ]  MediaRes =  3485   MediaCont =   59   BestRes =  3346 (  5 %)  ErroMed =  4.15  ErroMenor =  0.00  Tempo = 0.010937  MenorTempo = 0.015625
+[ 20 % ]  MediaRes =  3475   MediaCont =   53   BestRes =  3346 (  8 %)  ErroMed =  3.86  ErroMenor =  0.00  Tempo = 0.011562  MenorTempo = 0.015625
+[ 25 % ]  MediaRes =  3496   MediaCont =   64   BestRes =  3346 (  8 %)  ErroMed =  4.48  ErroMenor =  0.00  Tempo = 0.012968  MenorTempo = 0.000000
+[ 30 % ]  MediaRes =  3489   MediaCont =   61   BestRes =  3346 (  8 %)  ErroMed =  4.27  ErroMenor =  0.00  Tempo = 0.013281  MenorTempo = 0.015625
+[ 35 % ]  MediaRes =  3470   MediaCont =   69   BestRes =  3346 (  8 %)  ErroMed =  3.71  ErroMenor =  0.00  Tempo = 0.014843  MenorTempo = 0.015625
+[ 40 % ]  MediaRes =  3483   MediaCont =   65   BestRes =  3346 (  9 %)  ErroMed =  4.09  ErroMenor =  0.00  Tempo = 0.014843  MenorTempo = 0.015625
+[ 45 % ]  MediaRes =  3473   MediaCont =   65   BestRes =  3346 (  9 %)  ErroMed =  3.80  ErroMenor =  0.00  Tempo = 0.015312  MenorTempo = 0.015625
+[ 50 % ]  MediaRes =  3484   MediaCont =   66   BestRes =  3346 (  6 %)  ErroMed =  4.12  ErroMenor =  0.00  Tempo = 0.016250  MenorTempo = 0.015625

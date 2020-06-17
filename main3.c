@@ -31,7 +31,7 @@ Solution* construcao();
 int AlgGenetico();
 
 int main(){
-    clock_t tempo;
+    clock_t tempo, menortempo;
     srand(time(NULL));
     //Inicialização dos valores
     scanf("%d", &DIM);
@@ -64,6 +64,7 @@ int main(){
             if(result < best || !best){
                 best = result;
                 cbest = 1;
+                menortempo = tempo;
             }
             else if(result == best)
                 cbest++;
@@ -74,9 +75,9 @@ int main(){
         media[2] /= NUM_TESTES;
         cbest *= 100.0 / (float) NUM_TESTES;
         printf("[%3i %% ]  MediaRes = %5ld   MediaCont = %4ld   "\
-                "BestRes = %5ld (%3i %%)  ErroMed = %5.2f  ErroMenor = %5.2f  Tempo = %lf\n", i, media[0], 
+                "BestRes = %5ld (%3i %%)  ErroMed = %5.2f  ErroMenor = %5.2f  Tempo = %lf  MenorTempo = %lf\n", i, media[0], 
                 (media[1]-MAX_ITER), best, (int) cbest,(media[0]-OPT_VAL)*100.0/(OPT_VAL), (best-OPT_VAL)*100.0/(OPT_VAL),
-                (double) media[2]/CLOCKS_PER_SEC);
+                (double) media[2]/CLOCKS_PER_SEC, (double)menortempo/CLOCKS_PER_SEC);
     }
     //printf("\nCONT_GER = %ld\n\n", (long int) CONT_GER);
     
@@ -505,7 +506,7 @@ int AlgGenetico(){
     //execução da busca local
     for(i = 0; i < PSIZE; i++){
         copiar(populacao[i], populacao[i]->harbor);
-        fixed_swap(populacao[i]);
+        //fixed_swap(populacao[i]);
     }
 
     //início do ciclo
@@ -539,13 +540,15 @@ int AlgGenetico(){
             if((rand() % 100) < PERC_MUT)
                 mutacao(populacao[i]);
         
+        selectSubstitute(populacao, filhos);
         //execução da busca local
+        /*
         if((gerAtual - ultMelhor) % 3 == 0)
             for(i = 0; i < PSIZE; i++){
                 copiar(populacao[i], populacao[i]->harbor);
                 fixed_swap(populacao[i]);
             }
-
+        */
         //Atualização da melhor solução corrente e avanço de geração
         for(i = 0; i < PSIZE; i++)
             if(populacao[i]->distance < melhor->distance){
