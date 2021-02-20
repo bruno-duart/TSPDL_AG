@@ -28,7 +28,7 @@ int indexOf(Solution **Arr, int value);
 void order1Crossover(Solution** Pai, int **filho);
 void fixed_swap(Solution* s);
 Solution* construcao();
-int AlgGenetico();
+int AlgMemetico();
 
 int main(){
     clock_t tempo, menortempo;
@@ -56,7 +56,7 @@ int main(){
         //ciclo de execuções
         for(int j=0; j < NUM_TESTES; j++){
             tempo = clock();
-            result = AlgGenetico();
+            result = AlgMemetico();
             tempo = clock() - tempo;
             media[0] += result;
             media[1] += (long int) CONT_GER;
@@ -479,7 +479,7 @@ void selectSubstitute(Solution **populacao, Solution **filhos){
      */
 }
 
-int AlgGenetico(){
+int AlgMemetico(){
     //variáveis
     int i, j, numFilhos, nFighter, taxaMutacao;
     int gerAtual = 0, ultMelhor = 0;
@@ -506,7 +506,7 @@ int AlgGenetico(){
     //execução da busca local
     for(i = 0; i < PSIZE; i++){
         copiar(populacao[i], populacao[i]->harbor);
-        //fixed_swap(populacao[i]);
+        fixed_swap(populacao[i]);
     }
 
     //início do ciclo
@@ -542,13 +542,12 @@ int AlgGenetico(){
         
         selectSubstitute(populacao, filhos);
         //execução da busca local
-        /*
         if((gerAtual - ultMelhor) % 3 == 0)
             for(i = 0; i < PSIZE; i++){
                 copiar(populacao[i], populacao[i]->harbor);
                 fixed_swap(populacao[i]);
             }
-        */
+        
         //Atualização da melhor solução corrente e avanço de geração
         for(i = 0; i < PSIZE; i++)
             if(populacao[i]->distance < melhor->distance){
