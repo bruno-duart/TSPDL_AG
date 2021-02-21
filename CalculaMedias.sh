@@ -7,7 +7,7 @@ do
         for inst in {1..10}
         do
             echo "python < ResultadosAG_Artigo2/$file"_"$desv"_"$inst.txt"
-            ./mainAG < instances/$file'_'$desv'_'$inst'.txt' > ResultadosAG_Artigo2/"Resultados_$file"_"$desv"_"$inst.csv"
+            python3 ResultadosAG_Artigo2/"Resultados_$file"_"$desv"_"$inst"".csv" $file"_"$desv".csv"
         done
     done
 done

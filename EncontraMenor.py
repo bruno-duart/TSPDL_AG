@@ -1,12 +1,20 @@
 import pandas as pd 
 import sys
 
-dataF = pd.read_csv(f'{sys.argv[1]}.csv')
-#dataF = pd.read_csv(f'ResultadosAG_Artigo2/Resultados_burma14_50_2.csv')
-#print(dataF)
-df = dataF.nlargest(11,'MediaRes').tail(1)
-print(df)
-df.to_csv(f'ResultadosAG_Artigo2/Resultados{sys.argv[2]}.csv', mode='a')
+instances = ['burma14','bayg29','fri26','gr17','gr21','gr48',
+             'ulysses16','ulysses22']
+std = [10, 25, 50]
+
+for inst in instances:
+    for std_i in std:
+        for i in range(1,11):
+            dataF = pd.read_csv(f'ResultadosAG_Artigo2/Resultados_{inst}_{std_i}_{i}.csv')
+            #dataF = pd.read_csv(f'ResultadosAG_Artigo2/Resultados_burma14_50_2.csv')
+            #print(dataF)
+            df = dataF.nlargest(11,'MediaRes').tail(1)
+           # print(df)
+            with open(f'ResultadosAG_Artigo2/ResultadosMédia_{inst}_{std_i}.csv', 'a') as f:
+                df.to_csv(f, header=False)
 
 
 
