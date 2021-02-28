@@ -28,6 +28,7 @@ int indexOf(Solution **Arr, int value);
 void order1Crossover(Solution** Pai, int **filho);
 void fixed_swap(Solution* s);
 void Swap_2opt(Solution* s);
+void local_search_Allpopulation(Solution** S);
 Solution* construcao();
 int AlgMemetico();
 
@@ -42,7 +43,7 @@ int main(){
     scanf("%d", &OPT_VAL);
     PSIZE = DIM * 2;
     MAX_ITER = 100;
-    NUM_TESTES = 100;
+    NUM_TESTES = 10;
 
     printf("Ótimo Conhecido: %d\n", OPT_VAL);
     printf("Número de Repetições do AG: %d\n", NUM_TESTES);
@@ -505,12 +506,8 @@ int AlgMemetico(){
     }
 
     //execução da busca local
-    for(i = 0; i < PSIZE; i++){
-        copiar(populacao[i], populacao[i]->harbor);
-        fixed_swap(populacao[i]);
-        Swap_2opt(populacao[i]);
-    }
-
+    local_search_Allpopulation(populacao);
+    
     //início do ciclo
     while((gerAtual - ultMelhor) < MAX_ITER){
                 
@@ -545,11 +542,7 @@ int AlgMemetico(){
         selectSubstitute(populacao, filhos);
         //execução da busca local
         if((gerAtual - ultMelhor) % 3 == 0)
-            for(i = 0; i < PSIZE; i++){
-                copiar(populacao[i], populacao[i]->harbor);
-                fixed_swap(populacao[i]);
-                Swap_2opt(populacao[i]);
-            }
+            local_search_Allpopulation(populacao);
         
         //Atualização da melhor solução corrente e avanço de geração
         for(i = 0; i < PSIZE; i++)
@@ -616,30 +609,39 @@ void Swap_2opt(Solution* s){
     best_route->distance = fitness(best_route->harbor);
 
     //number of nodes eligible to be swapped: DIM-1 (penúltimo do array)
-    for(int i=1; i < DIM - 2; i++){
-        for(int k = i+1; k < DIM - 1; k++){
-            //  1. take s[0] to s[i-1] and add them in order to route
-            for(int j = 0; j < i; j++)
-                route[j] = s->harbor[j];
-            
-            //2. take s[i] to s[k] and add them in reverse order to route
-            for(int j = 0; j < (k - i); j++)
-                route[i+j] = s->harbor[k-j];
-            
-            //3. take [k+1] to end and add them in order to route
-            for(int j = k; j < DIM - 1; j++)
-                route[j] = s->harbor[j];
-            
-            if(is_Solution(route)){ //Verifica se a solução gerada é viável
-                route_distance = fitness(route);
-                if(route_distance < best_route->distance){ //Verifica se a solução é melhor que a corrente
-                    copiar(best_route, route);
-                    best_route->distance = route_distance;
+    do{
+        for(int i=1; i < DIM - 2; i++){
+            for(int k = i+1; k < DIM - 1; k++){
+                //  1. take s[0] to s[i-1] and add them in order to route
+                for(int j = 0; j < i; j++)
+                    route[j] = s->harbor[j];
+                
+                //2. take s[i] to s[k] and add them in reverse order to route
+                for(int j = 0; j < (k - i); j++)
+                    route[i+j] = s->harbor[k-j];
+                
+                //3. take [k+1] to end and add them in order to route
+                for(int j = k; j < DIM - 1; j++)
+                    route[j] = s->harbor[j];
+                
+                if(is_Solution(route)){ //Verifica se a solução gerada é viável
+                    route_distance = fitness(route);
+                    if(route_distance < best_route->distance){ //Verifica se a solução é melhor que a corrente
+                        copiar(best_route, route);
+                        best_route->distance = route_distance;
+                    }
                 }
             }
-        }
-    } 
-
+        } 
+    }while()
     //Atualiza a melhor solução
     copiar(s, best_route->harbor);        
+}
+
+void local_search_Allpopulation(Solution** S){
+    for(int i = 0; i < PSIZE; i++){
+       fixed_swap(S[i]);
+        //Swap_2opt(S[i]);
+        
+    }
 }
