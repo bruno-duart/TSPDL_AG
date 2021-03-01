@@ -609,39 +609,38 @@ void Swap_2opt(Solution* s){
     best_route->distance = fitness(best_route->harbor);
 
     //number of nodes eligible to be swapped: DIM-1 (penúltimo do array)
-    do{
-        for(int i=1; i < DIM - 2; i++){
-            for(int k = i+1; k < DIM - 1; k++){
-                //  1. take s[0] to s[i-1] and add them in order to route
-                for(int j = 0; j < i; j++)
-                    route[j] = s->harbor[j];
-                
-                //2. take s[i] to s[k] and add them in reverse order to route
-                for(int j = 0; j < (k - i); j++)
-                    route[i+j] = s->harbor[k-j];
-                
-                //3. take [k+1] to end and add them in order to route
-                for(int j = k; j < DIM - 1; j++)
-                    route[j] = s->harbor[j];
-                
-                if(is_Solution(route)){ //Verifica se a solução gerada é viável
-                    route_distance = fitness(route);
-                    if(route_distance < best_route->distance){ //Verifica se a solução é melhor que a corrente
-                        copiar(best_route, route);
-                        best_route->distance = route_distance;
-                    }
+    for(int i=0; i < DIM - 3; i++){
+        for(int k = i+2; k < DIM - 1; k++){
+            //  1. take s[0] to s[i-1] and add them in order to route
+            for(int j = 0; j < i; j++)
+                route[j] = s->harbor[j];
+            
+            //2. take s[i] to s[k] and add them in reverse order to route
+            for(int j = 0; j < (k - i); j++)
+                route[i+j] = s->harbor[k-j];
+            
+            //3. take [k+1] to end and add them in order to route
+            for(int j = k; j < DIM - 1; j++)
+                route[j] = s->harbor[j];
+            
+            if(is_Solution(route)){ //Verifica se a solução gerada é viável
+                route_distance = fitness(route);
+                if(route_distance < best_route->distance){ //Verifica se a solução é melhor que a corrente
+                    copiar(best_route, route);
+                    best_route->distance = route_distance;
+                    //return;
                 }
             }
-        } 
-    }while()
+        }
+    } 
+
     //Atualiza a melhor solução
     copiar(s, best_route->harbor);        
 }
 
 void local_search_Allpopulation(Solution** S){
     for(int i = 0; i < PSIZE; i++){
-       fixed_swap(S[i]);
-        //Swap_2opt(S[i]);
-        
+        fixed_swap(S[i]);
+        Swap_2opt(S[i]);
     }
 }
