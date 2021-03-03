@@ -28,6 +28,8 @@ int indexOf(Solution **Arr, int value);
 void order1Crossover(Solution** Pai, int **filho);
 void fixed_swap(Solution* s);
 void Swap_2opt(Solution* s);
+int reverse_segment_if_better(Solution* s, int i, int j, int k);
+void Swap_3opt(Solution* s);
 void local_search_Allpopulation(Solution** S);
 Solution* construcao();
 int AlgMemetico();
@@ -576,6 +578,11 @@ int AlgMemetico(){
 }
 
 void fixed_swap(Solution* s){
+    /* 
+        Realiza a busca local utilizando o critério de troca
+        fixa. Todas as posições são trocadas uma com as outras.
+        
+    */
     int aux, copy[DIM];
     
    //gera uma cópia da solução de entrada
@@ -610,7 +617,7 @@ void Swap_2opt(Solution* s){
 
     //number of nodes eligible to be swapped: DIM-1 (penúltimo do array)
     for(int i=0; i < DIM - 3; i++){
-        for(int k = i+2; k < DIM - 1; k++){
+        for(int k = i+2; k < DIM/4; k++){
             //  1. take s[0] to s[i-1] and add them in order to route
             for(int j = 0; j < i; j++)
                 route[j] = s->harbor[j];
@@ -638,9 +645,93 @@ void Swap_2opt(Solution* s){
     copiar(s, best_route->harbor);        
 }
 
+int reverse_segment_if_better(Solution* s, int i, int j, int k){
+    int A = s->harbor[i-1], B = s->harbor[i], C = s->harbor[j-1];
+    int D = s->harbor[j], E = s->harbor[k-1], F = s->harbor[k % DIM];
+
+    int d0, d1, d2, d3, d4;
+    d0 = G->adj[A][B] + G->adj[C][D] + G->adj[E][F];
+    d1 = G->adj[A][C] + G->adj[B][D] + G->adj[E][F];
+    d2 = G->adj[A][B] + G->adj[C][E] + G->adj[D][F];
+    d3 = G->adj[A][D] + G->adj[E][B] + G->adj[C][F];
+    d4 = G->adj[F][B] + G->adj[C][D] + G->adj[E][A];
+
+    if(d0 > d1){
+        /*  
+            tour[i:j] = reversed(tour[i:j])
+            return -d0 + d1 
+        */
+        int arr[j-i], m=0;
+        for(int l = i; l < j; l++)
+            arr[m++] = s->harbor[l];
+        m -= 1;
+        for(int l = i; l < j; l++)
+            s->harbor[l] = arr[m--];
+        return -d0 + d1;
+    }
+    else if(d0 > d2){
+        /*
+            tour[j:k] = reversed(tour[j:k])
+            return -d0 + d2
+        */
+        int arr[k-j], m=0;
+        for(int l = j; l < k; l++)
+            arr[m++] = s->harbor[l];
+        m -= 1;
+        for(int l = j; l < k; l++)
+            s->harbor[l] = arr[m--];
+        return -d0 + d2;
+    }
+    else if(d0 > d4){
+        /*
+            tour[i:k] = reversed(tour[i:k])
+            return -d0 + d4
+        */
+        int arr[k-i], m=0;
+        for(int l = i; l < k; l++)
+            arr[m++] = s->harbor[l];
+        m -= 1;
+        for(int l = i; l < k; l++)
+            s->harbor[l] = arr[m--];
+        return -d0 + d4;
+    }
+    else if(d0 > d3){
+        /*
+            tmp = tour[j:k] + tour[i:j]
+            tour[i:k] = tmp
+            return -d0 + d3        
+        */
+        int arr[k-i], m=0;
+        for(int l = j; l < k; l++)
+            arr[m++] = s->harbor[l];
+        for(int l = i; l < j; l++)
+            arr[m++] = s->harbor[l];
+        return -d0 + d3;
+    }
+    return 0;
+}
+
+void Swap_3opt(Solution* s){
+    int delta;
+    while(1){
+        delta = 0;
+        for(int i = 0; i < DIM; i++){
+            for(int j = i+2; j < DIM; j++){
+                for(int k = j+2; k < DIM + (i>0); k++){
+                    delta += reverse_segment_if_better(s, i, j, k);
+                }
+            }
+        }
+        if(delta >= 0)
+            break;
+    }
+    s->distance = fitness(s->harbor);
+}
+
 void local_search_Allpopulation(Solution** S){
     for(int i = 0; i < PSIZE; i++){
         fixed_swap(S[i]);
-        Swap_2opt(S[i]);
+        //Swap_2opt(S[i]);
+        //Swap_3opt(S[i]);
     }
 }
