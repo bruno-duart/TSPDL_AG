@@ -467,6 +467,9 @@ void selectSubstitute(Solution **populacao, Solution **filhos){
     }else if(filhos[ index[1] ]->distance < populacao[ index[3] ]->distance){
         copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
     }
+    
+   fixed_swap(populacao[ index[2] ]);
+    fixed_swap(populacao[ index[3] ]);
 
     /*Apenas para manter registrado caso queira trocar depois:
      *   if(filhos[ index[0] ]->distance < populacao[ index[2] ]->distance){
@@ -724,6 +727,7 @@ void Swap_3opt(Solution* s){
         }
         if(delta >= 0)
             break;
+        printf("Entrei\n");
     }
     s->distance = fitness(s->harbor);
 }
