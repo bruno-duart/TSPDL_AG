@@ -43,9 +43,9 @@ int main(){
     DEMAND = ini_array(DIM);
     DRAFT = ini_array(DIM);
     scanf("%d", &OPT_VAL);
-    PSIZE = DIM * 2;
-    MAX_ITER = 100;
-    NUM_TESTES = 10;
+    PSIZE =  2;
+    MAX_ITER = 1;
+    NUM_TESTES = 1;
 
     printf("Ótimo Conhecido: %d\n", OPT_VAL);
     printf("Número de Repetições do AG: %d\n", NUM_TESTES);
@@ -716,26 +716,26 @@ int reverse_segment_if_better(Solution* s, int i, int j, int k){
 
 void Swap_3opt(Solution* s){
     int delta;
-    while(1){
+   // while(1){
         delta = 0;
         for(int i = 0; i < DIM; i++){
             for(int j = i+2; j < DIM; j++){
-                for(int k = j+2; k < DIM + (i>0); k++){
+                for(int k = j+2; k < DIM /*+ (i>0)*/; k++){
                     delta += reverse_segment_if_better(s, i, j, k);
                 }
             }
         }
-        if(delta >= 0)
-            break;
-        printf("Entrei\n");
-    }
+        /*if(delta >= 0)
+            break;*/
+        //printf("Entrei\n");
+    //}
     s->distance = fitness(s->harbor);
 }
 
 void local_search_Allpopulation(Solution** S){
     for(int i = 0; i < PSIZE; i++){
-        fixed_swap(S[i]);
+        //fixed_swap(S[i]);
         //Swap_2opt(S[i]);
-        //Swap_3opt(S[i]);
+        Swap_3opt(S[i]);
     }
 }
