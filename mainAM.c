@@ -43,9 +43,9 @@ int main(){
     DEMAND = ini_array(DIM);
     DRAFT = ini_array(DIM);
     scanf("%d", &OPT_VAL);
-    PSIZE =  2;
-    MAX_ITER = 1;
-    NUM_TESTES = 1;
+    PSIZE =  2; // * DIM;
+    MAX_ITER = 1; // 100;
+    NUM_TESTES = 1; // 100;
 
     printf("Ótimo Conhecido: %d\n", OPT_VAL);
     printf("Número de Repetições do AG: %d\n", NUM_TESTES);
