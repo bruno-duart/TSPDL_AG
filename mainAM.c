@@ -43,9 +43,9 @@ int main(){
     DEMAND = ini_array(DIM);
     DRAFT = ini_array(DIM);
     scanf("%d", &OPT_VAL);
-    PSIZE =  2; // * DIM;
-    MAX_ITER = 1; // 100;
-    NUM_TESTES = 1; // 100;
+    PSIZE =  2 * DIM;
+    MAX_ITER = 100; // 100;
+    NUM_TESTES = 100; // 100;
 
     printf("Ótimo Conhecido: %d\n", OPT_VAL);
     printf("Número de Repetições do AG: %d\n", NUM_TESTES);
@@ -53,7 +53,7 @@ int main(){
     long int result, best, cbest, media[3];
     
     //variação da taxa de mutação
-    for(int i=0; i <= 50; i+=5){
+    for(int i=0; i <= 40; i+=5){
         PERC_MUT = i;
         media[0] = media[1] = media[2] = 0;
         best = 0;
@@ -416,6 +416,119 @@ void copiar(Solution *S, int *solucao){
     S->distance = fitness(solucao);
 }
 
+void quicksort(Solution** values, int began, int end){
+	int i, j, pivo;
+    Solution* aux;
+	i = began;
+	j = end-1;
+	pivo = values[(began + end) / 2]->distance;
+	while(i <= j)
+	{
+		while(values[i]->distance < pivo && i < end)
+		{
+			i++;
+		}
+		while(values[j]->distance > pivo && j > began)
+		{
+			j--;
+		}
+		if(i <= j)
+		{
+			aux = values[i];
+			values[i] = values[j];
+			values[j] = aux;
+			i++;
+			j--;
+		}
+	}
+	if(j > began)
+		quicksort(values, began, j+1);
+	if(i < end)
+		quicksort(values, i, end);
+}
+
+void Juntar(Solution** vetor, int ini, int meio, int fim, Solution** vetAux) {
+    int esq = ini;
+    int dir = meio;
+    for (int i = ini; i < fim; ++i) {
+        if ((esq < meio) && ((dir >= fim) || (vetor[esq]->distance < vetor[dir]->distance))) {
+            vetAux[i] = vetor[esq];
+            ++esq;
+        }
+        else {
+            vetAux[i] = vetor[dir];
+            ++dir;
+        }
+    }
+    //copiando o vetor de volta
+    for (int i = ini; i < fim; ++i) {
+        vetor[i] = vetAux[i];
+    }
+}
+
+void MergeSort_s(Solution** vetor, int inicio, int fim, Solution** vetAux) {
+    if ((fim - inicio) < 2) return;
+    
+    int meio = ((inicio + fim)/2);
+    MergeSort_s(vetor, inicio, meio, vetAux);
+    MergeSort_s(vetor, meio, fim, vetAux);
+    Juntar(vetor, inicio, meio, fim, vetAux);
+}
+
+void MergeSort(Solution** vetor, int tamanho) { //função que o usuario realmente chama
+    //criando vetor auxiliar
+    Solution** vetorAux = malloc(sizeof(Solution*)*PSIZE);
+    MergeSort_s(vetor, 0, tamanho, vetorAux);
+    free(vetorAux);
+}
+
+void shuffle(Solution **Arr, int nTrocas){
+    Solution *aux;
+    int idx1, idx2;
+
+    for(int i = 0; i < nTrocas; i++){
+        idx1 = rand() % (2 * G->V - 1);
+        do{
+            idx2 = rand() % (2 * G->V - 1);
+        }while(idx1 == idx2);
+        aux = Arr[idx1];
+        Arr[idx1] = Arr[idx2];
+        Arr[idx2] = aux;
+    }
+}
+
+void updateGer(Solution **populacao, Solution **filhos){
+    //posições 0..0,5PSIZE melhores filhos
+    //posições 0,5PSIZE..PSIZE piores pais
+ /*   int index[(int)0.5*PSIZE];
+    Solution **copiaPop = malloc(sizeof(Solution*)*PSIZE), **copiaFilhos = malloc(sizeof(Solution*)*PSIZE);
+    
+    for(int i = 0; i < PSIZE; i++){
+        copiaPop[i] = new_solution();
+        copiaFilhos[i] = new_solution();
+        copiar(copiaPop[i], populacao[i]->harbor);
+        copiar(copiaFilhos[i], filhos[i]->harbor);
+    }
+  */  
+    //quicksort(populacao, 0, PSIZE);
+    //quicksort(filhos, 0, PSIZE);
+    MergeSort(populacao, PSIZE);
+    MergeSort(filhos, PSIZE);
+
+    for(int i = PSIZE-1; i > 3*PSIZE/4; i--){
+        //copiaPop[]
+        copiar(populacao[i], filhos[i]->harbor);
+    }
+    shuffle(populacao, 2*PSIZE);
+/*
+    for(int i = 0; i < PSIZE; i++){
+        free_solution(copiaPop[i]);
+        free_solution(copiaFilhos[i]);
+    }    
+    free(copiaPop);
+    free(copiaFilhos);*/
+}
+
 void selectSubstitute(Solution **populacao, Solution **filhos){
     //posições 0 e 1 para os melhores filhos
     //posições 2 e 3 para os piores pais
@@ -468,7 +581,7 @@ void selectSubstitute(Solution **populacao, Solution **filhos){
         copiar(populacao[ index[3] ], filhos[ index[1] ]->harbor);
     }
     
-   fixed_swap(populacao[ index[2] ]);
+    fixed_swap(populacao[ index[2] ]);
     fixed_swap(populacao[ index[3] ]);
 
     /*Apenas para manter registrado caso queira trocar depois:
@@ -485,6 +598,8 @@ void selectSubstitute(Solution **populacao, Solution **filhos){
      *   }
      */
 }
+
+//void verifica_viabilidade_de_troca(){}
 
 int AlgMemetico(){
     //variáveis
@@ -515,7 +630,6 @@ int AlgMemetico(){
     
     //início do ciclo
     while((gerAtual - ultMelhor) < MAX_ITER){
-                
         //Cruzamento
         numFilhos = 0;
         for(i = 0; i < DIM; i++)
@@ -531,7 +645,6 @@ int AlgMemetico(){
                 copiar(filhos[numFilhos++], bebes[0]);
                 copiar(filhos[numFilhos++], bebes[1]);
             }
-        
         //Preenchimento complementar do conjunto de filhos
         while(numFilhos < PSIZE){
             i = rand() % PSIZE;
@@ -539,16 +652,19 @@ int AlgMemetico(){
         }
         
         //Mutação
-        taxaMutacao = ((gerAtual - ultMelhor) * PERC_MUT) / MAX_ITER;
+        //taxaMutacao = ((gerAtual - ultMelhor) * PERC_MUT) / MAX_ITER;
         for(i = 0; i < PSIZE; i++)
             if((rand() % 100) < PERC_MUT)
                 mutacao(populacao[i]);
+
+        //selectSubstitute(populacao, filhos);
+        updateGer(populacao,filhos);
+        //exit(1);
         
-        selectSubstitute(populacao, filhos);
         //execução da busca local
         if((gerAtual - ultMelhor) % 3 == 0)
             local_search_Allpopulation(populacao);
-        
+
         //Atualização da melhor solução corrente e avanço de geração
         for(i = 0; i < PSIZE; i++)
             if(populacao[i]->distance < melhor->distance){
@@ -556,7 +672,6 @@ int AlgMemetico(){
                 ultMelhor = gerAtual;
             }
         gerAtual++;
-        //print_arr(melhor->harbor);
     }
     
     ultMelhor = melhor->distance;
@@ -718,9 +833,9 @@ void Swap_3opt(Solution* s){
     int delta;
    // while(1){
         delta = 0;
-        for(int i = 0; i < DIM; i++){
-            for(int j = i+2; j < DIM; j++){
-                for(int k = j+2; k < DIM /*+ (i>0)*/; k++){
+        for(int i = 0; i < DIM + 4; i++){
+            for(int j = i+2; j < DIM + 2; j++){
+                for(int k = j+2; k < DIM + (i>0); k++){
                     delta += reverse_segment_if_better(s, i, j, k);
                 }
             }
@@ -733,9 +848,15 @@ void Swap_3opt(Solution* s){
 }
 
 void local_search_Allpopulation(Solution** S){
+    int ant;
     for(int i = 0; i < PSIZE; i++){
-        //fixed_swap(S[i]);
+        /*ant = S[i]->distance;
+        Swap_2opt(S[i]);
+        //if((ant - S[i]->distance) < (0.5*S[i]->distance))*/
+            fixed_swap(S[i]);
         //Swap_2opt(S[i]);
-        Swap_3opt(S[i]);
+        //printf("solução %d\n",i);
+        //Swap_3opt(S[i]);
+        //printf("solução %d terminada\n",i);*/
     }
 }
