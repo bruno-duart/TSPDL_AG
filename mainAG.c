@@ -411,6 +411,120 @@ void copiar(Solution *S, int *solucao){
     S->distance = fitness(solucao);
 }
 
+
+void quicksort(Solution** values, int began, int end){
+	int i, j, pivo;
+    Solution* aux;
+	i = began;
+	j = end-1;
+	pivo = values[(began + end) / 2]->distance;
+	while(i <= j)
+	{
+		while(values[i]->distance < pivo && i < end)
+		{
+			i++;
+		}
+		while(values[j]->distance > pivo && j > began)
+		{
+			j--;
+		}
+		if(i <= j)
+		{
+			aux = values[i];
+			values[i] = values[j];
+			values[j] = aux;
+			i++;
+			j--;
+		}
+	}
+	if(j > began)
+		quicksort(values, began, j+1);
+	if(i < end)
+		quicksort(values, i, end);
+}
+
+void Juntar(Solution** vetor, int ini, int meio, int fim, Solution** vetAux) {
+    int esq = ini;
+    int dir = meio;
+    for (int i = ini; i < fim; ++i) {
+        if ((esq < meio) && ((dir >= fim) || (vetor[esq]->distance < vetor[dir]->distance))) {
+            vetAux[i] = vetor[esq];
+            ++esq;
+        }
+        else {
+            vetAux[i] = vetor[dir];
+            ++dir;
+        }
+    }
+    //copiando o vetor de volta
+    for (int i = ini; i < fim; ++i) {
+        vetor[i] = vetAux[i];
+    }
+}
+
+void MergeSort_s(Solution** vetor, int inicio, int fim, Solution** vetAux) {
+    if ((fim - inicio) < 2) return;
+    
+    int meio = ((inicio + fim)/2);
+    MergeSort_s(vetor, inicio, meio, vetAux);
+    MergeSort_s(vetor, meio, fim, vetAux);
+    Juntar(vetor, inicio, meio, fim, vetAux);
+}
+
+void MergeSort(Solution** vetor, int tamanho) { //função que o usuario realmente chama
+    //criando vetor auxiliar
+    Solution** vetorAux = malloc(sizeof(Solution*)*PSIZE);
+    MergeSort_s(vetor, 0, tamanho, vetorAux);
+    free(vetorAux);
+}
+
+void shuffle(Solution **Arr, int nTrocas){
+    Solution *aux;
+    int idx1, idx2;
+
+    for(int i = 0; i < nTrocas; i++){
+        idx1 = rand() % (2 * G->V - 1);
+        do{
+            idx2 = rand() % (2 * G->V - 1);
+        }while(idx1 == idx2);
+        aux = Arr[idx1];
+        Arr[idx1] = Arr[idx2];
+        Arr[idx2] = aux;
+    }
+}
+
+void updateGer(Solution **populacao, Solution **filhos){
+    //posições 0..0,5PSIZE melhores filhos
+    //posições 0,5PSIZE..PSIZE piores pais
+ /*   int index[(int)0.5*PSIZE];
+    Solution **copiaPop = malloc(sizeof(Solution*)*PSIZE), **copiaFilhos = malloc(sizeof(Solution*)*PSIZE);
+    
+    for(int i = 0; i < PSIZE; i++){
+        copiaPop[i] = new_solution();
+        copiaFilhos[i] = new_solution();
+        copiar(copiaPop[i], populacao[i]->harbor);
+        copiar(copiaFilhos[i], filhos[i]->harbor);
+    }
+  */  
+    //quicksort(populacao, 0, PSIZE);
+    //quicksort(filhos, 0, PSIZE);
+    MergeSort(populacao, PSIZE);
+    MergeSort(filhos, PSIZE);
+
+    for(int i = PSIZE-1; i > 3*PSIZE/4; i--){
+        //copiaPop[]
+        copiar(populacao[i], filhos[i]->harbor);
+    }
+    shuffle(populacao, 2*PSIZE);
+/*
+    for(int i = 0; i < PSIZE; i++){
+        free_solution(copiaPop[i]);
+        free_solution(copiaFilhos[i]);
+    }    
+    free(copiaPop);
+    free(copiaFilhos);*/
+}
+
 void selectSubstitute(Solution **populacao, Solution **filhos){
     //posições 0 e 1 para os melhores filhos
     //posições 2 e 3 para os piores pais
@@ -538,7 +652,8 @@ int AlgGenetico(){
             if((rand() % 100) < PERC_MUT)
                 mutacao(populacao[i]);
         
-        selectSubstitute(populacao, filhos);
+        //selectSubstitute(populacao, filhos);
+        updateGer(populacao,filhos);
        
         //Atualização da melhor solução corrente e avanço de geração
         for(i = 0; i < PSIZE; i++)
@@ -570,27 +685,3 @@ int AlgGenetico(){
 
     return ultMelhor;
 }
-
-/*void fixed_swap(Solution* s){
-    int aux, copy[DIM];
-    
-   //gera uma cópia da solução de entrada
-   for(int k=0; k < G->V; k++)
-       copy[k] = s->harbor[k];
-    
-    for(int i=0; i < DIM-1; i++)
-        for(int j=i+1; j < DIM; j++){
-            //gera uma solução
-            aux = copy[j];
-            copy[j] = copy[i];
-            copy[i] = aux;
-
-            if(is_Solution(copy) && fitness(copy) < s->distance)
-                copiar(s, copy);
-            
-            //desfaz o movimento
-            aux = copy[j];
-            copy[j] = copy[i];
-            copy[i] = aux;
-        }
-}*/

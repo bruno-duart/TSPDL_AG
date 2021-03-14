@@ -513,7 +513,7 @@ void updateGer(Solution **populacao, Solution **filhos){
         copiar(copiaPop[i], populacao[i]->harbor);
         copiar(copiaFilhos[i], filhos[i]->harbor);
     }
-  */  
+*/  
     //quicksort(populacao, 0, PSIZE);
     //quicksort(filhos, 0, PSIZE);
     MergeSort(populacao, PSIZE);
@@ -661,8 +661,11 @@ int AlgMemetico(){
             if((rand() % 100) < PERC_MUT)
                 mutacao(populacao[i]);
 
-        //selectSubstitute(populacao, filhos);
-        updateGer(populacao,filhos);
+        i = rand() % 100;
+        if(i < 50)
+            selectSubstitute(populacao, filhos);
+        else
+            updateGer(populacao,filhos);
         //exit(1);
         
         //execução da busca local
