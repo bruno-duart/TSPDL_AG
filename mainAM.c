@@ -47,9 +47,10 @@ int main(){
     MAX_ITER = 100; // 100;
     NUM_TESTES = 100; // 100;
 
-    printf("Ótimo Conhecido: %d\n", OPT_VAL);
+    /*printf("Ótimo Conhecido: %d\n", OPT_VAL);
     printf("Número de Repetições do AG: %d\n", NUM_TESTES);
-    printf("Máximo de Gerações sem Melhora: %d\n", MAX_ITER);
+    printf("Máximo de Gerações sem Melhora: %d\n", MAX_ITER);*/
+    printf("Mutacao,MediaRes,NumMedGer,BestRes,ErroMed,ErroMenor,TempoMed,TempoMenor\n");
     long int result, best, cbest, media[3];
     
     //variação da taxa de mutação
@@ -78,9 +79,12 @@ int main(){
         media[1] /= NUM_TESTES;
         media[2] /= NUM_TESTES;
         cbest *= 100.0 / (float) NUM_TESTES;
-        printf("[%3i %% ]  MediaRes = %5ld   MediaCont = %4ld   "\
+        /*printf("[%3i %% ]  MediaRes = %5ld   MediaCont = %4ld   "\
                 "BestRes = %5ld (%3i %%)  ErroMed = %5.2f  ErroMenor = %5.2f  Tempo = %lf  MenorTempo = %lf\n", i, media[0], 
                 (media[1]-MAX_ITER), best, (int) cbest,(media[0]-OPT_VAL)*100.0/(OPT_VAL), (best-OPT_VAL)*100.0/(OPT_VAL),
+                (double) media[2]/CLOCKS_PER_SEC, (double)menortempo/CLOCKS_PER_SEC);*/
+        printf("%3i,%5ld,%4ld,%5ld,%5.2f,%5.2f,%lf,%lf\n", i, media[0], 
+                (media[1]-MAX_ITER), best,(media[0]-OPT_VAL)*100.0/(OPT_VAL), (best-OPT_VAL)*100.0/(OPT_VAL),
                 (double) media[2]/CLOCKS_PER_SEC, (double)menortempo/CLOCKS_PER_SEC);
     }
     //printf("\nCONT_GER = %ld\n\n", (long int) CONT_GER);

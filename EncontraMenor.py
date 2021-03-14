@@ -1,8 +1,7 @@
 import pandas as pd 
 import sys
 
-instances = ['burma14','bayg29','fri26','gr17','gr21','gr48',
-             'ulysses16','ulysses22']
+instances = ['bayg29','burma14','fri26','gr17','gr21','ulysses16','ulysses22','gr48']
 std = [10, 25, 50]
 
 for inst in instances:
