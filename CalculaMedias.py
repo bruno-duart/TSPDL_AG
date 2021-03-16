@@ -6,7 +6,7 @@ Created on Sat Feb 20 21:41:40 2021
 """
 
 import pandas as pd
-s
+
 instances = ['bayg29','burma14','fri26','gr17','gr21',
              'ulysses16','ulysses22','gr48']
 std = [10, 25, 50]
@@ -20,7 +20,7 @@ Err_Best = []
 
 for inst in instances:
     for std_i in std:
-        with open(f'ResultadosAG_Artigo2/ResultadosMédia_{inst}_{std_i}.csv', 'r') as f:
+        with open(f'ResultadosAM_Artigo2/ResultadosMédia_{inst}_{std_i}.csv', 'r') as f:
             df = pd.read_csv(f)
             MediaRes.append(df['MediaRes'].mean())
             T_Med.append(df['TempoMed'].mean())
@@ -41,4 +41,5 @@ df_d = {'Instância':['bayg29_10', 'bayg29_25', 'bayg29_50',
         'Sol. Mel.': BestRes, 'T_mel(s)': T_Best, '$\Delta_{Me} (\%)$': Err_Best}
 DF_result = pd.DataFrame(df_d)
 
-DF_result.to_csv('ResultadoAG_Art2.csv')
+DF_result.to_csv('ResultadoAM_Art2.csv',index=False)
+print('Acabou')
