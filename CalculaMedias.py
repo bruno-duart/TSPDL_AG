@@ -20,7 +20,7 @@ Err_Best = []
 
 for inst in instances:
     for std_i in std:
-        with open(f'ResultadosAM_Artigo2/ResultadosMédia_{inst}_{std_i}.csv', 'r') as f:
+        with open(f'ResultadosAG_Artigo2_Ordenado/ResultadosMédia_{inst}_{std_i}.csv', 'r') as f:
             df = pd.read_csv(f)
             MediaRes.append(df['MediaRes'].mean())
             T_Med.append(df['TempoMed'].mean())
@@ -41,5 +41,5 @@ df_d = {'Instância':['bayg29_10', 'bayg29_25', 'bayg29_50',
         'Sol. Mel.': BestRes, 'T_mel(s)': T_Best, '$\Delta_{Me} (\%)$': Err_Best}
 DF_result = pd.DataFrame(df_d)
 
-DF_result.to_csv('ResultadoAM_Art2.csv',index=False)
+DF_result.to_csv('ResultadoAG_Art2_Ord.csv',index=False)
 print('Acabou')
