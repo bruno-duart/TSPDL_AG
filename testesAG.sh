@@ -10,7 +10,7 @@ do
         for inst in {1..10}
         do
             echo "./mainAG < instances/$file"_"$desv"_"$inst.txt"
-            ./mainAG < instances/$file'_'$desv'_'$inst'.txt' > ResultadosAG_Artigo2/"Resultados_$file"_"$desv"_"$inst.csv"
+            time ./mainAG < instances/$file'_'$desv'_'$inst'.txt' > ResultadosAG_Artigo2_Ordenado/"Resultados_$file"_"$desv"_"$inst.csv"
         done
     done
 done

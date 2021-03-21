@@ -661,11 +661,9 @@ int AlgMemetico(){
             if((rand() % 100) < PERC_MUT)
                 mutacao(populacao[i]);
 
-        i = rand() % 100;
-        if(i < 50)
-            selectSubstitute(populacao, filhos);
-        else
-            updateGer(populacao,filhos);
+
+        selectSubstitute(populacao, filhos);
+        //updateGer(populacao,filhos);
         //exit(1);
         
         //execução da busca local
