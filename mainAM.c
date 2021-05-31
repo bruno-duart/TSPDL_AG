@@ -603,8 +603,6 @@ void selectSubstitute(Solution **populacao, Solution **filhos){
      */
 }
 
-//void verifica_viabilidade_de_troca(){}
-
 int AlgMemetico(){
     //variáveis
     int i, j, numFilhos, nFighter, taxaMutacao;
